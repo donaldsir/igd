@@ -1,21 +1,15 @@
 "use client";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import {
   Center,
-  Stack,
-  FormControl,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Button,
-  AspectRatio,
+  HStack,
+  Button
 } from "@chakra-ui/react";
-import { Icon } from "@chakra-ui/react";
-import { FaPaste } from "react-icons/fa";
+import { useRouter } from 'next/navigation'
 
 export default function Page() {
+  const router = useRouter()
   const [url, setUrl] = useState("https://www.instagram.com/p/DBAuEWcNllf/");
-  const proxy = "https://cors-anywhere.herokuapp.com/";
   const accessToken =
     "IGQWROTU1ZAYnB6MmkwZAC0wcUVVN2w5QVNybmJSaVNDNURjQ0FoVzA1QmNSQjl4ejdyekpnREVsN21nYXJUanV5VWJJSUVFQktFRV9KLUdmc21TUzlfdWxvS0FxMGtqNGFoVzhHUmI1d2lGNF9oeE9kS2VCeUJzb00ZD";
 
@@ -34,8 +28,6 @@ export default function Page() {
     if (!shortcode) {
       console.error("Invalid Instagram URL");
       return;
-    } else {
-      console.log(shortcode);
     }
 
     try {
@@ -49,33 +41,14 @@ export default function Page() {
   };
   return (
     <Center height="100vh">
-      <Stack>
-        <form onSubmit={(e: FormEvent<HTMLFormElement>) => submit(e)}>
-          <FormControl>
-            <InputGroup>
-              <Input
-                type="text"
-                minW={550}
-                value={url}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)}
-                placeholder="Paste URL Instagram"
-              />
-              <InputRightElement>
-                <Button>
-                  <Icon as={FaPaste} color="#493628" />
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-            <Button type="submit" colorScheme="red" size="sm" mt={2}>
-              Download
-            </Button>
-          </FormControl>
-        </form>
-
-        {/* <AspectRatio ratio={4 / 3} mt={10}>
-          <iframe src={url} />
-        </AspectRatio> */}
-      </Stack>
+      <HStack>
+        <Button colorScheme="teal" onClick={() => { router.push(`/download`) }}>
+          DOWNLOADER
+        </Button>
+        <Button colorScheme="teal" onClick={() => { router.push(`/download`) }}>
+          FRAME MAKER
+        </Button>
+      </HStack>
     </Center>
   );
 }
