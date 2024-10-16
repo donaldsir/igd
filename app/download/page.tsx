@@ -28,8 +28,8 @@ export default function Page() {
         e.preventDefault();
 
         const shortcode = getInstagramShortcode(url);
-        const apiUrl = `https://graph.instagram.com/${shortcode}?fields=caption&access_token=${accessToken}`;
-
+        const apiUrl = `https://graph.instagram.com/17874995799195348?fields=caption,media_url&access_token=${accessToken}`;
+        // https://graph.instagram.com/${shortcode}?fields=caption&access_token=
         if (!shortcode) {
             console.error("Invalid Instagram URL");
             return;
@@ -39,7 +39,7 @@ export default function Page() {
             const response = await fetch(apiUrl);
             const data = await response.json();
 
-            console.log(data);
+            console.log(data.caption);
         } catch (error) {
             console.error(error);
         }
@@ -69,9 +69,9 @@ export default function Page() {
                     </FormControl>
                 </form>
 
-                <AspectRatio ratio={4 / 3} mt={10}>
+                {/* <AspectRatio ratio={4 / 3} mt={10}>
                     <iframe src={url} />
-                </AspectRatio>
+                </AspectRatio> */}
             </Stack>
         </Center>
     );
