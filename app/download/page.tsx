@@ -2,21 +2,27 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import {
     Center,
-    Stack,
+    HStack,
     FormControl,
     Input,
     InputGroup,
     InputRightElement,
     Button,
+    SimpleGrid,
+    Box,
     AspectRatio,
+    Card,
+    CardHeader,
+    CardBody,
+    Heading,
 } from "@chakra-ui/react";
 import { Icon } from "@chakra-ui/react";
 import { FaPaste } from "react-icons/fa";
 
+
 export default function Page() {
     const [url, setUrl] = useState("https://www.instagram.com/p/DBAuEWcNllf/embed/captioned");
-    const accessToken =
-        "IGQWROTU1ZAYnB6MmkwZAC0wcUVVN2w5QVNybmJSaVNDNURjQ0FoVzA1QmNSQjl4ejdyekpnREVsN21nYXJUanV5VWJJSUVFQktFRV9KLUdmc21TUzlfdWxvS0FxMGtqNGFoVzhHUmI1d2lGNF9oeE9kS2VCeUJzb00ZD";
+    const [caption, setCaption] = useState('');
 
     const getInstagramShortcode = (urlShort: string) => {
         const regex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/p\/([A-Za-z0-9_-]+)/;
@@ -28,51 +34,73 @@ export default function Page() {
         e.preventDefault();
 
         const shortcode = getInstagramShortcode(url);
-        const apiUrl = `https://graph.instagram.com/17874995799195348?fields=caption,media_url&access_token=${accessToken}`;
-        // https://graph.instagram.com/${shortcode}?fields=caption&access_token=
-        if (!shortcode) {
-            console.error("Invalid Instagram URL");
-            return;
-        }
+        const apiUrl = `https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${shortcode}-&include_insights=true`;
 
         try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
+            // const response = await fetch(apiUrl, {
+            //     method: 'GET',
+            //     headers: {
+            //         'x-rapidapi-key': `3ab2799145msh117680a9dd1be7fp17da44jsn64b3358ca745`, // Include your token here
+            //     },
+            // });
+            // const res = await response.json();
+            // const data = res.data;
 
-            console.log(data.caption);
+
+            const res = await fetch(`/api/single`, { method: "GET" });
+            const data = await res.json();
+            setCaption(data.result.caption.text)
+            console.log(data.result.caption)
+
         } catch (error) {
             console.error(error);
         }
+
+
+
     };
     return (
-        <Center height="100vh">
-            <Stack>
-                <form onSubmit={(e: FormEvent<HTMLFormElement>) => submit(e)}>
-                    <FormControl>
-                        <InputGroup>
-                            <Input
-                                type="text"
-                                minW={550}
-                                value={url}
-                                onChange={(e: ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)}
-                                placeholder="Paste URL Instagram"
-                            />
-                            <InputRightElement>
-                                <Button>
-                                    <Icon as={FaPaste} color="#493628" />
-                                </Button>
-                            </InputRightElement>
-                        </InputGroup>
-                        <Button type="submit" colorScheme="teal" size="sm" mt={2}>
-                            Download
-                        </Button>
-                    </FormControl>
-                </form>
+        <SimpleGrid minChildWidth='180px' m={4} spacing={8}>
+            <Card>
+                <CardHeader>
+                    <Heading size='md'>URL</Heading>
+                </CardHeader>
+                <CardBody>
+                    <form onSubmit={(e: FormEvent<HTMLFormElement>) => submit(e)}>
+                        <FormControl>
+                            <InputGroup>
+                                <Input
+                                    type="text"
+                                    size="sm"
+                                    value={url}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)}
+                                    placeholder="Paste URL Instagram"
+                                />
+                                <InputRightElement>
+                                    <Button>
+                                        <Icon as={FaPaste} color="#493628" />
+                                    </Button>
+                                </InputRightElement>
+                            </InputGroup>
+                            <Button type="submit" colorScheme="teal" size="sm" mt={2}>
+                                Submit
+                            </Button>
+                        </FormControl>
+                    </form>
 
-                {/* <AspectRatio ratio={4 / 3} mt={10}>
-                    <iframe src={url} />
-                </AspectRatio> */}
-            </Stack>
-        </Center>
+                </CardBody>
+            </Card>
+            <Card>
+                <CardHeader>
+                    <Heading size='md'>Result</Heading>
+                </CardHeader>
+                <CardBody>
+                    <Heading size='sm'>Caption</Heading>
+                    {caption}
+                </CardBody>
+            </Card>
+
+        </SimpleGrid >
+
     );
 }
