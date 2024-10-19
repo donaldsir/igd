@@ -62,7 +62,6 @@ export default function Page() {
   const getInstagramShortcode = () => {
     const regex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:p|reel)\/([A-Za-z0-9-_]+)/;
     const match = url.match(regex);
-    showToast("Loading", 5, "Please wait...");
     if (match && match[1]) {
       return match[1];
     } else {
@@ -72,7 +71,7 @@ export default function Page() {
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    showToast("Loading", 5, "Please wait...");
+    showToast("Loading", 4, "Please wait...");
     const shortcode = getInstagramShortcode();
     const apiRapid = `https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${shortcode}-&include_insights=true`;
 
@@ -130,14 +129,19 @@ export default function Page() {
         }
       }
 
-      console.log(links);
-
+      const hashtag = "#planetdenpasar #planetkitabali";
       setEmbed(`https://www.instagram.com/p/${shortcode}/embed`);
-      setCaption(data.caption.text);
+      setCaption(`${data.caption.text} \n\n ${hashtag}`);
       setMedia(links);
+      console.log(links);
       toast.closeAll();
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      toast({
+        description: (e as Error).message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
@@ -177,6 +181,7 @@ export default function Page() {
   };
 
   const download = (media: IMedia) => {
+    showToast("Loading", 4, "Please wait...");
     const xhr = new XMLHttpRequest();
     xhr.open("GET", media.url, true);
     xhr.responseType = "blob";
@@ -193,9 +198,11 @@ export default function Page() {
       document.body.removeChild(tag);
     };
     xhr.onerror = () => {
-      showToast("Error", 2, "Failed to download picture");
+      showToast("Error", 1, "Failed to download media");
     };
     xhr.send();
+    toast.closeAll();
+    showToast("Loading", 0, "File downloaded successfully");
   };
 
   const downloadAll = (list_media: IMedia[]) => {
@@ -203,6 +210,29 @@ export default function Page() {
       download(media);
     }
   };
+
+  // async function downloadFile(blobData: any, id: string, ext: string) {
+  //   const blob = new Blob([blobData]);
+  //   const link = document.createElement("a");
+  //   link.href = URL.createObjectURL(blob);
+  //   link.download = `${id}.${ext}`;
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  //   URL.revokeObjectURL(link.href);
+  // }
+
+  // const downloadAPI = async (media: IMedia) => {
+  //   const fd = new FormData();
+  //   fd.append("url", media.url);
+  //   const res = await fetch(`/api/download`, { method: "POST", body: fd });
+
+  //   if (res.ok) {
+  //     const data = await res.json();
+  //     const ext = media.is_video ? "mp4" : "jpg";
+  //     downloadFile(data.blob, `${media.id}`, ext); // Or jpg based on the file type
+  //   }
+  // };
 
   return (
     <VStack divider={<StackDivider borderColor="gray.200" />} align="stretch">
