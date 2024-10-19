@@ -74,22 +74,22 @@ export default function Page() {
     e.preventDefault();
     showToast("Loading", 5, "Please wait...");
     const shortcode = getInstagramShortcode();
-    // const apiRapid = `https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${shortcode}-&include_insights=true`;
+    const apiRapid = `https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${shortcode}-&include_insights=true`;
 
     try {
-      // const response = await fetch(apiRapid, {
-      //   method: "GET",
-      //   headers: {
-      //     "x-rapidapi-key": `3ab2799145msh117680a9dd1be7fp17da44jsn64b3358ca745`, // Include your token here
-      //   },
-      // });
-      // const res = await response.json();
-      // const data = res.data;
+      const response = await fetch(apiRapid, {
+        method: "GET",
+        headers: {
+          "x-rapidapi-key": `3ab2799145msh117680a9dd1be7fp17da44jsn64b3358ca745`, // Include your token here
+        },
+      });
+      const res = await response.json();
+      const data = res.data;
 
       // get data from local json
-      const res = await fetch(`/api/carousel`);
-      const result = await res.json();
-      const data = result.result;
+      // const res = await fetch(`/api/carousel`);
+      // const result = await res.json();
+      // const data = result.result;
 
       const links: IMedia[] = [];
       if (data.carousel_media === undefined) {
