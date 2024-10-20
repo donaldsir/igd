@@ -180,34 +180,75 @@ export default function Page() {
     }
   };
 
-  const download = (media: IMedia) => {
-    showToast("Loading", 4, "Please wait...");
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", media.url, true);
-    xhr.responseType = "blob";
-    xhr.onload = function () {
-      const urlCreator = window.URL || window.webkitURL;
-      const imageUrl = urlCreator.createObjectURL(this.response);
+  // const download = (media: IMedia) => {
+  //   showToast("Loading", 4, "Please wait...");
+  //   const xhr = new XMLHttpRequest();
+  //   xhr.open("GET", media.url, true);
+  //   xhr.responseType = "blob";
+  //   xhr.onload = function () {
+  //     const urlCreator = window.URL || window.webkitURL;
+  //     const imageUrl = urlCreator.createObjectURL(this.response);
+  //     const ext = media.is_video ? "mp4" : "jpg";
+  //     const tag = document.createElement("a");
+  //     tag.href = imageUrl;
+  //     tag.target = "_blank";
+  //     tag.download = `${media.id}.${ext}`;
+  //     document.body.appendChild(tag);
+  //     tag.click();
+  //     document.body.removeChild(tag);
+  //   };
+  //   xhr.onerror = () => {
+  //     showToast("Error", 1, "Failed to download media");
+  //   };
+  //   xhr.send();
+  //   toast.closeAll();
+  //   showToast("Success", 0, "File downloaded successfully");
+  // };
+
+  const downloadMedia = async (media: IMedia) => {
+    try {
+      showToast("Loading", 4, "Please wait...");
+
+      // Fetch the file from the given URL
+      const response = await fetch(media.url);
+
+      // Check if the response is OK (status code 200)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch file: ${response.statusText}`);
+      }
+
+      // Get the file data as a blob
+      const blob = await response.blob();
+
+      // Create a URL for the blob
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      // Create an anchor element and set the blob URL as the href
+      const a = document.createElement("a");
+      a.href = blobUrl;
       const ext = media.is_video ? "mp4" : "jpg";
-      const tag = document.createElement("a");
-      tag.href = imageUrl;
-      tag.target = "_blank";
-      tag.download = `${media.id}.${ext}`;
-      document.body.appendChild(tag);
-      tag.click();
-      document.body.removeChild(tag);
-    };
-    xhr.onerror = () => {
-      showToast("Error", 1, "Failed to download media");
-    };
-    xhr.send();
-    toast.closeAll();
-    showToast("Loading", 0, "File downloaded successfully");
+      a.download = `${media.id}.${ext}`;
+
+      // Append the anchor to the document and trigger a download
+      document.body.appendChild(a);
+      a.click();
+
+      // Remove the anchor and revoke the blob URL
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (e) {
+      toast({
+        description: (e as Error).message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   const downloadAll = (list_media: IMedia[]) => {
     for (const media of list_media) {
-      download(media);
+      downloadMedia(media);
     }
   };
 
@@ -292,7 +333,7 @@ export default function Page() {
                         bg="teal"
                         color="white"
                         onClick={() => {
-                          download(item);
+                          downloadMedia(item);
                         }}
                         p={2}
                         textAlign="center"
