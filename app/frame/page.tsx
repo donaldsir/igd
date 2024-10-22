@@ -7,9 +7,7 @@ import {
   SimpleGrid,
   Box,
   Card,
-  CardHeader,
   CardBody,
-  Heading,
   Spacer,
   VStack,
   Image,
@@ -20,7 +18,7 @@ import {
   FormLabel,
   Text,
 } from "@chakra-ui/react";
-import { Icon, useToast } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 
@@ -59,14 +57,14 @@ export default function Page() {
     const arrTitle = title.split(" ");
     let numRow = 0;
     let start = arrTitle.length - 1;
-    const titles = new Array();
+    const titles = [];
 
     while (numRow < 3) {
       let currLength = 0;
-      let singleLine = new Array();
+      const singleLine = [];
       let space = 1;
       for (let i = start; i >= 0; i--) {
-        let newLength = currLength + arrTitle[i].length + space;
+        const newLength = currLength + arrTitle[i].length + space;
 
         if (i === 0) {
           singleLine.push(arrTitle[i].toUpperCase());
@@ -136,8 +134,13 @@ export default function Page() {
             </CardBody>
           </Card>
           <div id="container" style={{ position: "relative" }}>
-            <Image src="/images/logo-pd-stroke.png" w={100} style={{ position: "absolute", top: 10, left: 270 }} />
-            <Image src={gambar ? gambar : "/images/no-image.jpg"} w={400} h={500} fit="cover" />
+            <Image
+              src="/images/logo-pd-stroke.png"
+              w={100}
+              style={{ position: "absolute", top: 10, left: 270 }}
+              alt="logo white"
+            />
+            <Image src={gambar ? gambar : "/images/no-image.jpg"} w={400} h={500} fit="cover" alt="media" />
             {lines.map((item, index) => (
               <Text
                 key={index}
