@@ -21,7 +21,7 @@ export default function Page() {
           <Button
             colorScheme="teal"
             onClick={() => {
-              router.push(`/download`);
+              router.push(`/frame`);
             }}
           >
             FRAME MAKER
