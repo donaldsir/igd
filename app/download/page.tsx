@@ -99,7 +99,7 @@ export default function Page() {
                 }
             } else {
                 let i = 1;
-                for (let dt of data.carousel_media) {
+                for (const dt of data.carousel_media) {
                     if (dt.is_video) {
                         links.push({
                             url: `${dt.video_url}&dl=1`,
