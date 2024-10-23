@@ -254,7 +254,7 @@ export default function Page() {
                                 style={{ whiteSpace: "pre-wrap" }}
                                 size='sm'
                                 rows={caption ? 30 : 3}
-                                onChange={() => { }}
+                                onChange={(e) => { setCaption(e.target.value) }}
                             />
                         </CardBody>
                     </Card>

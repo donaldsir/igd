@@ -150,6 +150,19 @@ export default function Page() {
         setLines(titles);
     };
 
+    const createFileName = () => {
+        // Generate a random string
+        const randomString = Math.random().toString(36).substring(2, 10);
+
+        // Get the current timestamp
+        const timestamp = Date.now();
+
+        // Construct the file name using the random string, timestamp, and extension
+        const fileName = `pd_${randomString}_${timestamp}`;
+
+        return fileName;
+    }
+
     const download = (elementId: string, filename: string) => {
         const element = document.getElementById(elementId);
 
@@ -208,7 +221,7 @@ export default function Page() {
                                 <Button type="submit" colorScheme="teal" size="sm" mt={4}>
                                     Create Text
                                 </Button>
-                                <Button onClick={() => download('canvas', 'test')} colorScheme="teal" size="sm" mt={4} ml={1} disabled={gambar ? false : true}>
+                                <Button onClick={() => download('canvas', createFileName())} colorScheme="teal" size="sm" mt={4} ml={1} disabled={gambar ? false : true}>
                                     Download Result
                                 </Button>
                             </form>
@@ -222,6 +235,7 @@ export default function Page() {
                             alt="logo white"
                         />
                         <Image src={gambar ? gambar : "/images/no-image.jpg"} w={400} h={500} fit="cover" alt="media" />
+                        <Box style={{ position: "absolute", bottom: 0 }} bg="linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)" w="100%" h={60 * lines.length} />
                         {lines.map((item, index) => (
                             <Text
                                 key={index}
