@@ -29,7 +29,7 @@ export default function Page() {
     const toast = useToast();
 
     const [gambar, setGambar] = useState("");
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState(``);
     const [lines, setLines] = useState<string[]>([]);
 
     const showToast = useCallback(async (title: string, iStatus: number, message: string) => {
@@ -109,7 +109,7 @@ export default function Page() {
 
         const trimTitle = title.trim()
         if (trimTitle.length > 120) {
-            showToast("Error", 1, `Title is too long (maximum is 120 charaters)`)
+            showToast("Error", 1, `Title is too long (maximum is 120 characters)`)
             return;
         }
 
@@ -235,12 +235,12 @@ export default function Page() {
                             alt="logo white"
                         />
                         <Image src={gambar ? gambar : "/images/no-image.jpg"} w={400} h={500} fit="cover" alt="media" />
-                        <Box style={{ position: "absolute", bottom: 0 }} bg="linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%)" w="100%" h={60 * lines.length} />
+                        <Box style={{ position: "absolute", bottom: 0 }} bg="linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 80%)" w="100%" h={70 * lines.length} />
                         {lines.map((item, index) => (
                             <Text
                                 key={index}
-                                style={{ position: "absolute", top: 450 - 37 * index }}
-                                bg="teal"
+                                style={{ position: "absolute", top: 430 - 37 * index }}
+                                bg="#148b9d"
                                 color="white"
                                 fontWeight="medium"
                                 fontSize={21.7}
