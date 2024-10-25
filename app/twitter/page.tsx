@@ -1,5 +1,6 @@
 "use client";
 import { useState, useCallback, ChangeEvent, FormEvent } from "react";
+
 import {
     FormControl,
     Input,
@@ -27,25 +28,18 @@ import { Icon, useToast } from "@chakra-ui/react";
 import { FaPaste, FaDownload, FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 
-interface IMedia {
-    url: string;
-    title: string;
-}
-
 export default function Page() {
     const [url, setUrl] = useState("");
-    const [embed, setEmbed] = useState("");
     const [caption, setCaption] = useState("");
+    const [id, setId] = useState("")
     const [originalCaption, setOriginalCaption] = useState("")
-    const [owner, setOwner] = useState("");
-    const [media, setMedia] = useState<IMedia[]>([]);
+    const [urlMedia, setUrlMedia] = useState("")
     const [repost, setRepost] = useState(true)
-
-    const hashtag = ['#planetdenpasar', '#planetkitabali', '#infonetizenbali', '#infosemetonbali', '#bali']
+    const [owner, setOwner] = useState("");
 
     const router = useRouter();
     const toast = useToast();
-    // const accessToken = "IGQWRQOTZAPUlpXdGgxMDgwV283Nk5fVDJ2NTZAwX081UVNCLXFneDYyUEJmMWZAyODFtQTRTTWRHbVlyS041YW55MThIQUlLWU9ZANGZAsMnI4eXJUckdGV3pyMnZAQUGMzOEhyWnhhbjUzY2dIZA1FGMUMxN3RTc3BHX2sZD"
+    const hashtag = ['#planetdenpasar', '#planetkitabali', '#infonetizenbali', '#infosemetonbali', '#bali']
 
     const showToast = useCallback(
         async (title: string, iStatus: number, message: string) => {
@@ -63,96 +57,6 @@ export default function Page() {
         [toast]
     );
 
-    const getInstagramShortcode = () => {
-        const regex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:p|reel)\/([A-Za-z0-9-_]+)/;
-        const match = url.match(regex);
-        if (match && match[1]) {
-            return match[1];
-        } else {
-            return null; // Return null if no shortcode is found
-        }
-    };
-
-    const onRepostChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setRepost(e.target.checked)
-
-        if (e.target.checked) {
-            setCaption(`${originalCaption}\n\nRepost via : @${owner}\n\n${hashtag.join(' ')}`);
-        } else {
-            setCaption(`${originalCaption}\n\n${hashtag.join(' ')}`);
-        }
-    }
-
-    const submit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        showToast("Loading", 4, "Please wait...");
-        const shortcode = getInstagramShortcode();
-        const apiRapid = `https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${shortcode}-&include_insights=true`;
-
-        try {
-            const response = await fetch(apiRapid, {
-                method: "GET",
-                headers: {
-                    "x-rapidapi-key": `3ab2799145msh117680a9dd1be7fp17da44jsn64b3358ca745`, // Include your token here
-                },
-            });
-            const res = await response.json();
-            const data = res.data;
-
-            const links: IMedia[] = [];
-            if (data.carousel_media === undefined) {
-                if (data.is_video) {
-                    links.push({
-                        url: `${data.video_url}&dl=1`,
-                        title: "Download Video",
-                    });
-                } else {
-                    links.push({
-                        url: `${data.thumbnail_url}&dl=1`,
-                        title: "Download Image",
-                    });
-                }
-            } else {
-                let i = 1;
-                for (const dt of data.carousel_media) {
-                    if (dt.is_video) {
-                        links.push({
-                            url: `${dt.video_url}&dl=1`,
-                            title: `Download Slide #${i}`,
-                        });
-                    } else {
-                        links.push({
-                            url: `${dt.thumbnail_url}&dl=1`,
-                            title: `Download Slide #${i}`,
-                        });
-                    }
-                    i++;
-                }
-            }
-
-            setEmbed(`https://www.instagram.com/p/${shortcode}/embed`);
-            setOriginalCaption(data.caption.text)
-            setOwner(data.owner.username)
-            setMedia(links);
-
-            if (repost) {
-                setCaption(`${data.caption.text}\n\nRepost via : @${data.owner.username}\n\n${hashtag.join(' ')}`);
-            } else {
-                setCaption(`${data.caption.text}\n\n${hashtag.join(' ')}`);
-            }
-
-            toast.closeAll();
-        } catch (e) {
-            toast.closeAll();
-            showToast("Error", 1, (e as Error).message)
-        }
-    };
-
-    const copy = () => {
-        navigator.clipboard.writeText(caption);
-        showToast("Success", 0, "Copied to cliboard")
-    };
-
     const paste = async () => {
         try {
             // Check if the browser supports the Clipboard API
@@ -168,6 +72,83 @@ export default function Page() {
         }
     };
 
+    const copy = () => {
+        navigator.clipboard.writeText(caption);
+        showToast("Success", 0, "Copied to cliboard")
+    };
+
+    const onRepostChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setRepost(e.target.checked)
+
+        if (e.target.checked) {
+            setCaption(`${originalCaption}\n\nRepost via X : ${owner}\n\n${hashtag.join(' ')}`);
+        } else {
+            setCaption(`${originalCaption}\n\n${hashtag.join(' ')}`);
+        }
+    }
+
+    const submit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        showToast("Loading", 4, "Please wait...");
+        const tweet_id = url.match("[0-9]{10,20}");
+        const apiRapid = `https://twitter-api45.p.rapidapi.com/tweet.php?id=${tweet_id}`;
+
+        try {
+            const response = await fetch(apiRapid, {
+                method: "GET",
+                headers: {
+                    "x-rapidapi-key": `3ab2799145msh117680a9dd1be7fp17da44jsn64b3358ca745`, // Include your token here
+                },
+            });
+            const data = await response.json();
+
+            setId(tweet_id ? tweet_id.toString() : "")
+            setOriginalCaption(data.display_text)
+            setUrlMedia(`${data.media.video[0].variants[3].url}`)
+            setOwner(data.author.screen_name)
+
+            if (repost) {
+                setCaption(`${data.display_text}\n\nRepost via X : ${data.author.screen_name}\n\n${hashtag.join(' ')}`);
+            } else {
+                setCaption(`${data.display_text}\n\n${hashtag.join(' ')}`);
+            }
+            toast.closeAll();
+        } catch (e) {
+            showToast("Error", 1, (e as Error).message)
+        }
+    }
+
+    const download = async () => {
+        showToast("Loading", 4, "Please wait...");
+        try {
+            const response = await fetch(urlMedia);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch video: ${response.status} ${response.statusText}`);
+            }
+
+            const blob = await response.blob();
+            const downloadUrl = URL.createObjectURL(blob);
+
+            // Create a temporary anchor element for download
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = `X_${id}.mp4`;
+            a.style.display = 'none';
+
+            // Append anchor to body, click it to start download, then remove it
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            // Release the blob URL after download
+            URL.revokeObjectURL(downloadUrl);
+            console.log('Download complete.');
+            toast.closeAll();
+        } catch (e) {
+            toast.closeAll();
+            showToast("Error", 1, (e as Error).message)
+        }
+    }
 
     return (
         <VStack divider={<StackDivider borderColor="gray.200" />} align="stretch">
@@ -199,7 +180,7 @@ export default function Page() {
                                             type="text"
                                             value={url}
                                             onChange={(e: ChangeEvent<HTMLInputElement>) => setUrl(e.target.value)}
-                                            placeholder="Paste URL Instagram"
+                                            placeholder="Paste URL X Video"
                                         />
                                         <InputRightElement>
                                             <Button onClick={paste}>
@@ -210,36 +191,22 @@ export default function Page() {
                                     <Button type="submit" leftIcon={<FaDownload />} colorScheme="teal" size="sm" mt={4} width="100%">
                                         DOWNLOAD
                                     </Button>
-
-
                                 </FormControl>
                             </form>
-                            {media.length > 0 && (
-                                <Box mt={4} p={4} display={{ md: "flex" }}>
-                                    <Box flexShrink={0}>
-                                        <iframe src={embed} height={450} />
-                                    </Box>
-                                    <Box mt={{ base: 4, md: 0 }} ml={{ md: 6 }}>
-                                        {media.map((item, index) => (
-                                            <Link
-                                                fontSize="sm"
-                                                key={index}
-                                                mt={2}
-                                                display="block"
-                                                bg="teal"
-                                                color="white"
-                                                href={item.url}
-                                                p={2}
-                                                textAlign="center"
-                                                borderRadius={6}
-                                            >
-                                                {item.title}
-                                            </Link>
-                                        ))}
+                            {urlMedia && <Link
+                                fontSize="sm"
+                                mt={2}
+                                display="block"
+                                bg="teal"
+                                color="white"
+                                p={2}
+                                textAlign="center"
+                                borderRadius={6}
+                                onClick={() => download()}
+                            >
+                                Download Video
+                            </Link>}
 
-                                    </Box>
-                                </Box>
-                            )}
                         </CardBody>
                     </Card>
                     <Card>
@@ -267,5 +234,5 @@ export default function Page() {
                 </SimpleGrid>
             </Box>
         </VStack>
-    );
+    )
 }
