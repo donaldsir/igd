@@ -1,5 +1,5 @@
 "use client";
-import { Center, HStack, VStack, Button, Image, Box, SimpleGrid } from "@chakra-ui/react";
+import { Center, VStack, Button, Image, Box, SimpleGrid } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
@@ -26,7 +26,7 @@ export default function Page() {
                 router.push(`/twitter`);
               }}
             >
-              X POST
+              X VIDEO
             </Button>
 
           </SimpleGrid>
