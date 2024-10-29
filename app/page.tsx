@@ -1,5 +1,5 @@
 "use client";
-import { Center, HStack, VStack, Button, Image, Box, SimpleGrid } from "@chakra-ui/react";
+import { Center, VStack, Button, Image, Box, SimpleGrid } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
@@ -20,7 +20,6 @@ export default function Page() {
               IG POST
             </Button>
             <Button
-
               colorScheme="teal"
               onClick={() => {
                 router.push(`/twitter`);
@@ -28,7 +27,6 @@ export default function Page() {
             >
               X POST
             </Button>
-
           </SimpleGrid>
           <SimpleGrid columns={2} spacing={2} mt={2}>
             <Button
@@ -41,8 +39,7 @@ export default function Page() {
             </Button>
           </SimpleGrid>
         </Box>
-
       </VStack>
-    </Center >
+    </Center>
   );
 }
