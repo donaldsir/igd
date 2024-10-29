@@ -12,7 +12,6 @@ import {
     CardHeader,
     CardBody,
     Heading,
-    Link,
     Flex,
     Spacer,
     VStack,
@@ -41,7 +40,7 @@ export default function Page() {
     const [media, setMedia] = useState<IMedia[]>([]);
     const [repost, setRepost] = useState(true)
 
-    const hashtag = ['#planetdenpasar', '#planetkitabali', '#infonetizenbali', '#infosemetonbali', '#bali']
+    const hashtag = ['#planetdenpasar', '#planetkitabali', '#bali', '#infonetizenbali', '#infosemetonbali',]
 
     const router = useRouter();
     const toast = useToast();
@@ -77,7 +76,7 @@ export default function Page() {
         setRepost(e.target.checked)
 
         if (e.target.checked) {
-            setCaption(`${originalCaption}\n\nRepost via : @${owner}\n\n${hashtag.join(' ')}`);
+            setCaption(`${originalCaption}\n\nRepost : @${owner}\n\n${hashtag.join(' ')}`);
         } else {
             setCaption(`${originalCaption}\n\n${hashtag.join(' ')}`);
         }
@@ -136,7 +135,7 @@ export default function Page() {
             setMedia(links);
 
             if (repost) {
-                setCaption(`${data.caption.text}\n\nRepost via : @${data.owner.username}\n\n${hashtag.join(' ')}`);
+                setCaption(`${data.caption.text}\n\nRepost : @${data.owner.username}\n\n${hashtag.join(' ')}`);
             } else {
                 setCaption(`${data.caption.text}\n\n${hashtag.join(' ')}`);
             }
@@ -221,20 +220,15 @@ export default function Page() {
                                     </Box>
                                     <Box mt={{ base: 4, md: 0 }} ml={{ md: 6 }}>
                                         {media.map((item, index) => (
-                                            <Link
-                                                fontSize="sm"
+                                            <Button
+                                                size="sm"
                                                 key={index}
                                                 mt={2}
-                                                display="block"
-                                                bg="teal"
-                                                color="white"
-                                                href={item.url}
-                                                p={2}
-                                                textAlign="center"
-                                                borderRadius={6}
+                                                colorScheme="teal"
+                                                onClick={() => router.push(item.url)}
                                             >
                                                 {item.title}
-                                            </Link>
+                                            </Button>
                                         ))}
 
                                     </Box>
