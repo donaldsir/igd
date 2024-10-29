@@ -20,7 +20,6 @@ export default function Page() {
               IG POST
             </Button>
             <Button
-
               colorScheme="teal"
               onClick={() => {
                 router.push(`/twitter`);
@@ -28,7 +27,6 @@ export default function Page() {
             >
               X VIDEO
             </Button>
-
           </SimpleGrid>
           <SimpleGrid columns={2} spacing={2} mt={2}>
             <Button
@@ -41,8 +39,7 @@ export default function Page() {
             </Button>
           </SimpleGrid>
         </Box>
-
       </VStack>
-    </Center >
+    </Center>
   );
 }
