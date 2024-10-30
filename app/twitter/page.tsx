@@ -12,7 +12,6 @@ import {
   Card,
   CardHeader,
   CardBody,
-  Heading,
   Flex,
   Spacer,
   VStack,
@@ -171,9 +170,6 @@ export default function Page() {
       <Box>
         <SimpleGrid columns={{ md: 2, sm: 1 }} m={4} spacing={8}>
           <Card>
-            <CardHeader>
-              <Heading size="sm">URL</Heading>
-            </CardHeader>
             <CardBody>
               <form onSubmit={(e: FormEvent<HTMLFormElement>) => submit(e)}>
                 <FormControl>
