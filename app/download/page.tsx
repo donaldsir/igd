@@ -88,7 +88,7 @@ export default function Page() {
     e.preventDefault();
     showToast("Loading", 4, "Please wait...");
     const shortcode = getInstagramShortcode();
-    const apiRapid = `https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${shortcode}-&include_insights=true`;
+    const apiRapid = `https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${shortcode}&include_insights=true`;
 
     try {
       const response = await fetch(apiRapid, {
@@ -133,11 +133,11 @@ export default function Page() {
 
       setEmbed(`https://www.instagram.com/p/${shortcode}/embed`);
       setOriginalCaption(data.caption.text);
-      setOwner(data.owner.username);
+      setOwner(data.user.username);
       setMedia(links);
 
       if (repost) {
-        setCaption(`${data.caption.text}\n\nRepost : @${data.owner.username}\n\n${hashtag.join(" ")}`);
+        setCaption(`${data.caption.text}\n\nRepost : @${data.user.username}\n\n${hashtag.join(" ")}`);
       } else {
         setCaption(`${data.caption.text}\n\n${hashtag.join(" ")}`);
       }
