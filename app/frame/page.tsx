@@ -202,7 +202,7 @@ export default function Page() {
               <form onSubmit={(e: FormEvent<HTMLFormElement>) => submit(e)}>
                 <FormControl>
                   <FormLabel>Image</FormLabel>
-                  <Input type="file" size="sm" onChange={(e) => onChangeFile(e)} />
+                  <Input type="file" accept="image/*" size="sm" onChange={(e) => onChangeFile(e)} />
                 </FormControl>
                 <FormControl mt={4}>
                   <FormLabel>

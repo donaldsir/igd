@@ -92,6 +92,20 @@ export default function Page() {
     }
   };
 
+  const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    const selectedFiles = files as FileList;
+
+    const blob = new Blob([selectedFiles?.[0]]);
+    const imgsrc = URL.createObjectURL(blob);
+
+    const img = new window.Image();
+
+    img.src = imgsrc;
+
+    setGambar(imgsrc);
+  };
+
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     showToast("Loading", 4, "Please wait...");
@@ -149,7 +163,7 @@ export default function Page() {
       setOriginalCaption(data.caption.text);
       setOwner(data.user.username);
       setMedia(links);
-      setGambar(`${data.thumbnail_url}`)
+
 
       if (repost) {
         setCaption(`${data.caption.text}\n\nRepost : @${data.user.username}\n\n${hashtag.join(" ")}`);
@@ -162,6 +176,51 @@ export default function Page() {
       toast.closeAll();
       showToast("Error", 1, (e as Error).message);
     }
+  };
+
+  const createFrame = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const trimTitle = title.trim();
+    if (trimTitle.length > 120) {
+      showToast("Error", 1, `Title is too long (maximum is 120 characters)`);
+      return;
+    }
+
+    const arrTitle = trimTitle.split(" ");
+    let numRow = 0;
+    let start = arrTitle.length - 1;
+    const titles = [];
+
+    while (numRow < 4) {
+      let currLength = 0;
+      const singleLine = [];
+      let space = 1;
+      for (let i = start; i >= 0; i--) {
+        const newLength = currLength + arrTitle[i].length + space;
+
+        if (i === 0) {
+          singleLine.push(arrTitle[i].toUpperCase());
+          singleLine.reverse();
+          titles.push(singleLine.join(" "));
+          numRow = 4;
+        } else {
+          if (newLength <= 34) {
+            singleLine.push(arrTitle[i].toUpperCase());
+            space++;
+            currLength = newLength;
+          } else {
+            singleLine.reverse();
+            titles.push(singleLine.join(" "));
+            start = i;
+            break;
+          }
+        }
+      }
+      numRow++;
+    }
+
+    setLines(titles);
   };
 
   const copy = () => {
@@ -212,6 +271,7 @@ export default function Page() {
       link.click();
     });
   };
+
 
   return (
     <VStack divider={<StackDivider borderColor="gray.200" />} align="stretch">
@@ -307,8 +367,11 @@ export default function Page() {
             <CardBody>
               <Card>
                 <CardBody>
-                  <form onSubmit={(e: FormEvent<HTMLFormElement>) => submit(e)}>
-
+                  <form onSubmit={(e: FormEvent<HTMLFormElement>) => createFrame(e)}>
+                    <FormControl>
+                      <FormLabel>Image</FormLabel>
+                      <Input type="file" accept="image/*" size="sm" onChange={(e) => onChangeFile(e)} />
+                    </FormControl>
                     <FormControl mt={4}>
                       <FormLabel>
                         Title <span style={{ color: "red", fontSize: 14 }}>({`${title.trim().length}/120`})</span>
