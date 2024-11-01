@@ -23,6 +23,12 @@ import { useToast } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import * as htmlToImage from "html-to-image";
+import { Poppins } from 'next/font/google'
+
+const poppins = Poppins({
+  weight: '600',
+  subsets: ['latin'],
+})
 
 export default function Page() {
   const router = useRouter();
@@ -62,55 +68,55 @@ export default function Page() {
     setGambar(imgsrc);
   };
 
-  // const randomSentence = useCallback((maxLength: number = 120): string => {
-  //     // Define a list of words to choose from
-  //     const words: string[] = [
-  //         "the", "quick", "brown", "fox", "jumps", "over", "lazy", "dog",
-  //         "lorem", "ipsum", "dolor", "sit", "amet", "consectetur",
-  //         "adipiscing", "elit", "sed", "do", "eiusmod", "tempor",
-  //         "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua",
-  //         "ut", "enim", "ad", "minim", "veniam", "quis", "nostrud",
-  //         "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip",
-  //         "ex", "ea", "commodo", "consequat", "duis", "aute", "irure",
-  //         "dolor", "in", "reprehenderit", "in", "voluptate", "velit",
-  //         "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur",
-  //         "excepteur", "sint", "occaecat", "cupidatat", "non", "proident",
-  //         "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit",
-  //         "anim", "id", "est", "laborum"
-  //     ];
+  // const randomSentence = useCallback((maxLength: number = 109): string => {
+  //   // Define a list of words to choose from
+  //   const words: string[] = [
+  //     "the", "quick", "brown", "fox", "jumps", "over", "lazy", "dog",
+  //     "lorem", "ipsum", "dolor", "sit", "amet", "consectetur",
+  //     "adipiscing", "elit", "sed", "do", "eiusmod", "tempor",
+  //     "incididunt", "ut", "labore", "et", "dolore", "magna", "aliqua",
+  //     "ut", "enim", "ad", "minim", "veniam", "quis", "nostrud",
+  //     "exercitation", "ullamco", "laboris", "nisi", "ut", "aliquip",
+  //     "ex", "ea", "commodo", "consequat", "duis", "aute", "irure",
+  //     "dolor", "in", "reprehenderit", "in", "voluptate", "velit",
+  //     "esse", "cillum", "dolore", "eu", "fugiat", "nulla", "pariatur",
+  //     "excepteur", "sint", "occaecat", "cupidatat", "non", "proident",
+  //     "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit",
+  //     "anim", "id", "est", "laborum"
+  //   ];
 
-  //     let sentence = '';
+  //   let sentence = '';
 
-  //     // Continue adding words until the sentence reaches the maximum length
-  //     while (true) {
-  //         // Randomly select a word from the list
-  //         const word = words[Math.floor(Math.random() * words.length)];
+  //   // Continue adding words until the sentence reaches the maximum length
+  //   while (true) {
+  //     // Randomly select a word from the list
+  //     const word = words[Math.floor(Math.random() * words.length)];
 
-  //         // Check if adding the next word exceeds the max length
-  //         if (sentence.length + word.length + 1 > maxLength) {
-  //             break; // Stop if the next word would exceed max length
-  //         }
-
-  //         // Add the word to the sentence
-  //         sentence += (sentence ? ' ' : '') + word; // Add space if not the first word
+  //     // Check if adding the next word exceeds the max length
+  //     if (sentence.length + word.length + 1 > maxLength) {
+  //       break; // Stop if the next word would exceed max length
   //     }
 
-  //     // Capitalize the first letter and add a period at the end
-  //     sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1) + '.';
+  //     // Add the word to the sentence
+  //     sentence += (sentence ? ' ' : '') + word; // Add space if not the first word
+  //   }
 
-  //     return sentence;
+  //   // Capitalize the first letter and add a period at the end
+  //   sentence = sentence.charAt(0) + sentence.slice(1) + '.';
+
+  //   return sentence;
   // }, [toast, showToast]);
 
   // useEffect(() => {
-  //     setTitle(randomSentence());
+  //   setTitle(randomSentence());
   // }, [randomSentence]);
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const trimTitle = title.trim();
-    if (trimTitle.length > 120) {
-      showToast("Error", 1, `Title is too long (maximum is 120 characters)`);
+    const trimTitle = capitalizeFirstLetter(title.trim());
+    if (trimTitle.length > 110) {
+      showToast("Error", 1, `Title is too long (maximum is 110 characters)`);
       return;
     }
 
@@ -127,13 +133,13 @@ export default function Page() {
         const newLength = currLength + arrTitle[i].length + space;
 
         if (i === 0) {
-          singleLine.push(arrTitle[i].toUpperCase());
+          singleLine.push(arrTitle[i]);
           singleLine.reverse();
           titles.push(singleLine.join(" "));
           numRow = 4;
         } else {
-          if (newLength <= 34) {
-            singleLine.push(arrTitle[i].toUpperCase());
+          if (newLength <= 40) {
+            singleLine.push(arrTitle[i]);
             space++;
             currLength = newLength;
           } else {
@@ -179,6 +185,24 @@ export default function Page() {
     });
   };
 
+  const capitalizeFirstLetter = (text: string) => {
+    if (!text) return "";
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+
+  const textWidth = (text: string): number => {
+    let width = 0;
+    for (let i = 0; i < text.length - 1; i++) {
+      if (text.charAt(i) === "i" || (text.charAt(i) === "I") || (text.charAt(i) === "l") || (text.charAt(i) === " ")) {
+        width += 1;
+      } else {
+        width += 2;
+      }
+    }
+
+    return width
+  }
+
   return (
     <VStack divider={<StackDivider borderColor="gray.200" />} align="stretch">
       <Box>
@@ -206,7 +230,7 @@ export default function Page() {
                 </FormControl>
                 <FormControl mt={4}>
                   <FormLabel>
-                    Title <span style={{ color: "red", fontSize: 14 }}>({`${title.trim().length}/120`})</span>
+                    Title <span style={{ color: "red", fontSize: 14 }}>({`${title.trim().length}/110`})</span>
                   </FormLabel>
                   <Textarea
                     value={title}
@@ -234,17 +258,17 @@ export default function Page() {
           </Card>
           <Center id="canvas" style={{ position: "relative", width: 400, height: 500 }}>
             <Image
-              src="/images/logo-pd-stroke.png"
+              src="/images/logo-pd.png"
               w={100}
-              style={{ position: "absolute", top: 10, right: 10 }}
+              style={{ position: "absolute", top: 15 }}
               alt="logo white"
             />
             <Image src={gambar ? gambar : "/images/no-image.jpg"} w={400} h={500} fit="cover" alt="media" />
             <Box
               style={{ position: "absolute", bottom: 0 }}
-              bg="linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 80%)"
+              bg="linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 70%)"
               w="100%"
-              h={70 * lines.length}
+              h={75 * lines.length}
             />
             {lines.map((item, index) => (
               <Text
@@ -252,9 +276,9 @@ export default function Page() {
                 style={{ position: "absolute", top: 430 - 37 * index }}
                 bg="#148b9d"
                 color="white"
-                fontWeight="medium"
-                fontSize={21.7}
+                fontSize={textWidth(item) > 55 ? 20.8 : 22}
                 px={1}
+                className={poppins.className}
               >
                 {item}
               </Text>

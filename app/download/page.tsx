@@ -29,7 +29,12 @@ import { Icon, useToast } from "@chakra-ui/react";
 import { FaPaste, FaDownload, FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import * as htmlToImage from "html-to-image";
+import { Poppins } from 'next/font/google'
 
+const poppins = Poppins({
+  weight: '600',
+  subsets: ['latin'],
+})
 
 interface IMedia {
   url: string;
@@ -181,9 +186,9 @@ export default function Page() {
   const createFrame = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const trimTitle = title.trim();
-    if (trimTitle.length > 120) {
-      showToast("Error", 1, `Title is too long (maximum is 120 characters)`);
+    const trimTitle = capitalizeFirstLetter(title.trim());
+    if (trimTitle.length > 110) {
+      showToast("Error", 1, `Title is too long (maximum is 110 characters)`);
       return;
     }
 
@@ -200,13 +205,13 @@ export default function Page() {
         const newLength = currLength + arrTitle[i].length + space;
 
         if (i === 0) {
-          singleLine.push(arrTitle[i].toUpperCase());
+          singleLine.push(arrTitle[i]);
           singleLine.reverse();
           titles.push(singleLine.join(" "));
           numRow = 4;
         } else {
-          if (newLength <= 34) {
-            singleLine.push(arrTitle[i].toUpperCase());
+          if (newLength <= 40) {
+            singleLine.push(arrTitle[i]);
             space++;
             currLength = newLength;
           } else {
@@ -271,6 +276,24 @@ export default function Page() {
       link.click();
     });
   };
+
+  const capitalizeFirstLetter = (text: string) => {
+    if (!text) return "";
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+
+  const textWidth = (text: string): number => {
+    let width = 0;
+    for (let i = 0; i < text.length - 1; i++) {
+      if (text.charAt(i) === "i" || (text.charAt(i) === "I") || (text.charAt(i) === "l") || (text.charAt(i) === " ")) {
+        width += 1;
+      } else {
+        width += 2;
+      }
+    }
+
+    return width
+  }
 
 
   return (
@@ -353,7 +376,7 @@ export default function Page() {
                 value={caption}
                 style={{ whiteSpace: "pre-wrap" }}
                 size="sm"
-                rows={caption ? 30 : 3}
+                rows={caption ? 20 : 3}
                 onChange={(e) => {
                   setCaption(e.target.value);
                 }}
@@ -374,7 +397,7 @@ export default function Page() {
                     </FormControl>
                     <FormControl mt={4}>
                       <FormLabel>
-                        Title <span style={{ color: "red", fontSize: 14 }}>({`${title.trim().length}/120`})</span>
+                        Title <span style={{ color: "red", fontSize: 14 }}>({`${title.trim().length}/110`})</span>
                       </FormLabel>
                       <Textarea
                         value={title}
@@ -404,17 +427,17 @@ export default function Page() {
           </Card>
           <Center id="canvas" style={{ position: "relative", width: 400, height: 500 }}>
             <Image
-              src="/images/logo-pd-stroke.png"
+              src="/images/logo-pd.png"
               w={100}
-              style={{ position: "absolute", top: 10, right: 10 }}
+              style={{ position: "absolute", top: 15 }}
               alt="logo white"
             />
             <Image src={gambar ? gambar : "/images/no-image.jpg"} w={400} h={500} fit="cover" alt="media" />
             <Box
               style={{ position: "absolute", bottom: 0 }}
-              bg="linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 80%)"
+              bg="linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 70%)"
               w="100%"
-              h={70 * lines.length}
+              h={75 * lines.length}
             />
             {lines.map((item, index) => (
               <Text
@@ -422,9 +445,9 @@ export default function Page() {
                 style={{ position: "absolute", top: 430 - 37 * index }}
                 bg="#148b9d"
                 color="white"
-                fontWeight="medium"
-                fontSize={21.7}
+                fontSize={textWidth(item) > 55 ? 20.8 : 22}
                 px={1}
+                className={poppins.className}
               >
                 {item}
               </Text>
