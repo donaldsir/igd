@@ -429,15 +429,15 @@ export default function Page() {
             <Image
               src="/images/logo-pd.png"
               w={100}
-              style={{ position: "absolute", top: 15 }}
+              style={{ position: "absolute", top: 20 }}
               alt="logo white"
             />
             <Image src={gambar ? gambar : "/images/no-image.jpg"} w={400} h={500} fit="cover" alt="media" />
             <Box
               style={{ position: "absolute", bottom: 0 }}
-              bg="linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 70%)"
+              bg="linear-gradient(180deg, rgba(0,0,0,0)5%, rgba(0,0,0,1) 40%)"
               w="100%"
-              h={75 * lines.length}
+              h={70 * lines.length}
             />
             {lines.map((item, index) => (
               <Text
@@ -445,7 +445,36 @@ export default function Page() {
                 style={{ position: "absolute", top: 430 - 37 * index }}
                 bg="#148b9d"
                 color="white"
-                fontSize={textWidth(item) > 55 ? 20.8 : 22}
+                fontSize={textWidth(item) > 54 ? 19.5 : 20.5}
+                px={1}
+                className={poppins.className}
+              >
+                {item}
+              </Text>
+            ))}
+          </Center>
+
+          <Center id="canvas" style={{ position: "relative", width: 400, height: 500 }}>
+            <Image
+              src="/images/logo-pd.png"
+              w={100}
+              style={{ position: "absolute", top: 20 }}
+              alt="logo white"
+            />
+            <Image src={gambar ? gambar : "/images/no-image.jpg"} w={400} h={500} fit="cover" alt="media" />
+            <Box
+              style={{ position: "absolute", bottom: 50, boxShadow: '5px 5px #148b9d' }}
+              bg="rgba(255,255,255,0.7)"
+              w="80%"
+              h={70 * lines.length}
+            />
+            {lines.map((item, index) => (
+              <Text
+                key={index}
+                style={{ position: "absolute", top: 430 - 37 * index }}
+                bg="#148b9d"
+                color="white"
+                fontSize={textWidth(item) > 54 ? 19.5 : 20.5}
                 px={1}
                 className={poppins.className}
               >
