@@ -23,16 +23,17 @@ import {
   Heading,
   FormLabel,
   Center,
-  Text
+  Text,
+  Container
 } from "@chakra-ui/react";
 import { Icon, useToast } from "@chakra-ui/react";
 import { FaPaste, FaDownload, FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import * as htmlToImage from "html-to-image";
-import { Poppins } from 'next/font/google'
+import { Roboto } from 'next/font/google'
 
-const poppins = Poppins({
-  weight: '600',
+const roboto = Roboto({
+  weight: '700',
   subsets: ['latin'],
 })
 
@@ -51,7 +52,6 @@ export default function Page() {
   const [repost, setRepost] = useState(true);
   const [gambar, setGambar] = useState("");
   const [title, setTitle] = useState(``);
-  const [lines, setLines] = useState<string[]>([]);
 
   const hashtag = ["#planetdenpasar", "#planetkitabali", "#bali", "#infonetizenbali", "#infosemetonbali"];
 
@@ -182,52 +182,6 @@ export default function Page() {
       showToast("Error", 1, (e as Error).message);
     }
   };
-
-  const createFrame = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const trimTitle = capitalizeFirstLetter(title.trim());
-    if (trimTitle.length > 110) {
-      showToast("Error", 1, `Title is too long (maximum is 110 characters)`);
-      return;
-    }
-
-    const arrTitle = trimTitle.split(" ");
-    let numRow = 0;
-    let start = arrTitle.length - 1;
-    const titles = [];
-
-    while (numRow < 4) {
-      let currLength = 0;
-      const singleLine = [];
-      let space = 1;
-      for (let i = start; i >= 0; i--) {
-        const newLength = currLength + arrTitle[i].length + space;
-
-        if (i === 0) {
-          singleLine.push(arrTitle[i]);
-          singleLine.reverse();
-          titles.push(singleLine.join(" "));
-          numRow = 4;
-        } else {
-          if (newLength <= 40) {
-            singleLine.push(arrTitle[i]);
-            space++;
-            currLength = newLength;
-          } else {
-            singleLine.reverse();
-            titles.push(singleLine.join(" "));
-            start = i;
-            break;
-          }
-        }
-      }
-      numRow++;
-    }
-
-    setLines(titles);
-  };
-
   const copy = () => {
     navigator.clipboard.writeText(caption);
     showToast("Success", 0, "Copied to cliboard");
@@ -276,25 +230,6 @@ export default function Page() {
       link.click();
     });
   };
-
-  const capitalizeFirstLetter = (text: string) => {
-    if (!text) return "";
-    return text.charAt(0).toUpperCase() + text.slice(1);
-  }
-
-  const textWidth = (text: string): number => {
-    let width = 0;
-    for (let i = 0; i < text.length - 1; i++) {
-      if (text.charAt(i) === "i" || (text.charAt(i) === "I") || (text.charAt(i) === "l") || (text.charAt(i) === " ")) {
-        width += 1;
-      } else {
-        width += 2;
-      }
-    }
-
-    return width
-  }
-
 
   return (
     <VStack divider={<StackDivider borderColor="gray.200" />} align="stretch">
@@ -390,68 +325,60 @@ export default function Page() {
             <CardBody>
               <Card>
                 <CardBody>
-                  <form onSubmit={(e: FormEvent<HTMLFormElement>) => createFrame(e)}>
-                    <FormControl>
-                      <FormLabel>Image</FormLabel>
-                      <Input type="file" accept="image/*" size="sm" onChange={(e) => onChangeFile(e)} />
-                    </FormControl>
-                    <FormControl mt={4}>
-                      <FormLabel>
-                        Title <span style={{ color: "red", fontSize: 14 }}>({`${title.trim().length}/110`})</span>
-                      </FormLabel>
-                      <Textarea
-                        value={title}
-                        style={{ whiteSpace: "pre-wrap" }}
-                        size="sm"
-                        rows={3}
-                        onChange={(e) => setTitle(e.target.value)}
-                      />
-                    </FormControl>
-                    <Button type="submit" colorScheme="teal" size="sm" mt={4}>
-                      Create Text
-                    </Button>
-                    <Button
-                      onClick={() => downloadFrame("canvas", createFileName())}
-                      colorScheme="teal"
+                  <FormControl>
+                    <FormLabel>Image</FormLabel>
+                    <Input type="file" accept="image/*" size="sm" onChange={(e) => onChangeFile(e)} />
+                  </FormControl>
+                  <FormControl mt={4}>
+                    <FormLabel>
+                      Title <span style={{ color: "red", fontSize: 14 }}>({`${title.trim().length}/110`})</span>
+                    </FormLabel>
+                    <Textarea
+                      value={title}
+                      style={{ whiteSpace: "pre-wrap" }}
                       size="sm"
-                      mt={4}
-                      ml={1}
-                      disabled={gambar ? false : true}
-                    >
-                      Download Result
-                    </Button>
-                  </form>
+                      rows={3}
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                  </FormControl>
+                  <Button
+                    onClick={() => downloadFrame("canvas", createFileName())}
+                    colorScheme="teal"
+                    size="sm"
+                    mt={4}
+                    ml={1}
+                    disabled={gambar ? false : true}
+                  >
+                    Download Result
+                  </Button>
                 </CardBody>
               </Card>
             </CardBody>
           </Card>
+
           <Center id="canvas" style={{ position: "relative", width: 400, height: 500 }}>
             <Image
               src="/images/logo-pd.png"
               w={100}
-              style={{ position: "absolute", top: 15 }}
+              style={{ position: "absolute", top: 20 }}
               alt="logo white"
             />
             <Image src={gambar ? gambar : "/images/no-image.jpg"} w={400} h={500} fit="cover" alt="media" />
-            <Box
-              style={{ position: "absolute", bottom: 0 }}
-              bg="linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 70%)"
-              w="100%"
-              h={75 * lines.length}
-            />
-            {lines.map((item, index) => (
+            <Container
+              style={{ position: "absolute", bottom: 60, boxShadow: '7px 7px #148b9d' }}
+              bg="rgba(255,255,255,0.9)"
+              w="85%"
+              p={2}
+            >
               <Text
-                key={index}
-                style={{ position: "absolute", top: 430 - 37 * index }}
-                bg="#148b9d"
-                color="white"
-                fontSize={textWidth(item) > 55 ? 20.8 : 22}
-                px={1}
-                className={poppins.className}
+                fontSize={25}
+                className={roboto.className}
+                textAlign="center"
+                lineHeight={1.25}
               >
-                {item}
+                {title}
               </Text>
-            ))}
+            </Container>
           </Center>
         </SimpleGrid>
       </Box>
