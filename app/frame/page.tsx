@@ -125,7 +125,14 @@ export default function Page() {
     });
   };
 
+  const capitalizeWords = () => {
+    const text =
+      title.split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
 
+    setTitle(text)
+  }
   return (
     <VStack divider={<StackDivider borderColor="gray.200" />} align="stretch">
       <Box>
@@ -162,7 +169,15 @@ export default function Page() {
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </FormControl>
-
+              <Button
+                onClick={() => capitalizeWords()}
+                colorScheme="teal"
+                size="sm"
+                mt={4}
+                ml={1}
+              >
+                Capitalize
+              </Button>
               <Button
                 onClick={() => download("canvas", createFileName())}
                 colorScheme="teal"
