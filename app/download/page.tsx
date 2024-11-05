@@ -347,7 +347,6 @@ export default function Page() {
                     size="sm"
                     mt={4}
                     ml={1}
-                    disabled={gambar ? false : true}
                   >
                     Download Result
                   </Button>
