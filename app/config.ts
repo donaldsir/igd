@@ -42,3 +42,16 @@ export const words: string[] = [
     "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollit",
     "anim", "id", "est", "laborum"
 ];
+
+
+export const getInstagramShortcode = (url: string) => {
+    const regex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:p|reel)\/([A-Za-z0-9-_]+)/;
+    const match = url.match(regex);
+    if (match && match[1]) {
+        return match[1];
+    } else {
+        return null; // Return null if no shortcode is found
+    }
+};
+
+export const hashtag = ["#planetdenpasar", "#planetkitabali", "#bali", "#infonetizenbali", "#infosemetonbali"];

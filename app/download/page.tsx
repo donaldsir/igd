@@ -133,7 +133,7 @@ export default function Page() {
 
         if (data.is_video) {
           links.push({
-            url: `${data.video_url}&dl=1`,
+            url: `${data.video_versions[1].url}&dl=1`,
             title: "Download Video",
           });
 
@@ -145,7 +145,7 @@ export default function Page() {
         for (const dt of data.carousel_media) {
           if (dt.is_video) {
             links.push({
-              url: `${dt.video_url}&dl=1`,
+              url: `${dt.video_versions[1].url}&dl=1`,
               title: `Download Slide #${i}`,
             });
           } else {

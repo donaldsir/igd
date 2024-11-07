@@ -14,6 +14,8 @@
     "@chakra-ui/react": "^2.10.2",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@ffmpeg/ffmpeg": "^0.12.10",
+    "@ffmpeg/util": "^0.12.1",
     "btch-downloader": "^2.3.2",
     "framer-motion": "^11.11.8",
     "html-to-image": "^1.11.11",

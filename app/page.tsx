@@ -37,6 +37,14 @@ export default function Page() {
             >
               FRAME MAKER
             </Button>
+            <Button
+              colorScheme="teal"
+              onClick={() => {
+                router.push(`/video`);
+              }}
+            >
+              VIDEO
+            </Button>
           </SimpleGrid>
         </Box>
       </VStack>
