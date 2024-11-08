@@ -55,3 +55,19 @@ export const getInstagramShortcode = (url: string) => {
 };
 
 export const hashtag = ["#planetdenpasar", "#planetkitabali", "#bali", "#infonetizenbali", "#infosemetonbali"];
+
+export function getVideoResolution(url: string): Promise<{ width: number, height: number }> {
+    return new Promise((resolve, reject) => {
+        const video = document.createElement('video');
+        video.src = url;
+
+        // Tunggu sampai metadata video (termasuk resolusi) tersedia
+        video.onloadedmetadata = () => {
+            resolve({ width: video.videoWidth, height: video.videoHeight });
+        };
+
+        video.onerror = (error) => {
+            reject('Gagal memuat video: ' + error);
+        };
+    });
+}

@@ -27,7 +27,7 @@ import {
 import { useState, ChangeEvent, FormEvent, useRef, useCallback, useEffect } from "react";
 import { FaPaste, FaDownload, FaArrowLeft } from "react-icons/fa";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { fetchFile, toBlobURL } from "@ffmpeg/util";
+import { fetchFile } from "@ffmpeg/util";
 import { useRouter } from "next/navigation";
 import { Icon, useToast } from "@chakra-ui/react";
 import { getInstagramShortcode, hashtag } from "../config";
@@ -39,6 +39,7 @@ const roboto = Roboto({
     subsets: ['latin'],
 })
 
+
 export default function Page() {
     const [url, setUrl] = useState('')
     const [videoURL, setVideoURL] = useState('')
@@ -49,7 +50,7 @@ export default function Page() {
     const [title, setTitle] = useState(``);
     const ffmpegRef = useRef(new FFmpeg())
     const videoRef = useRef<HTMLVideoElement | null>(null)
-    const messageRef = useRef<HTMLParagraphElement | null>(null)
+
 
     const router = useRouter();
     const toast = useToast();
@@ -71,30 +72,14 @@ export default function Page() {
         [toast]
     );
 
-
-    const load = useCallback(
-        async () => {
-            showToast("Loading", 4, "Please wait...");
-            const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd'
-            const ffmpeg = ffmpegRef.current
-            ffmpeg.on('log', ({ message }) => {
-                if (messageRef.current) messageRef.current.innerHTML = message
-            })
-            // toBlobURL is used to bypass CORS issue, urls with the same
-            // domain can be used directly.
-            await ffmpeg.load({
-                coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-                wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm')
-            })
-
-            toast.closeAll()
-        },
-        [showToast, toast]
-    );
-
     useEffect(() => {
-        load()
-    }, [load]);
+        const loadFfmpeg = async () => {
+            const ffmpegInstance = new FFmpeg();
+            await ffmpegInstance.load(); // Tunggu hingga ffmpeg selesai dimuat
+            ffmpegRef.current = ffmpegInstance; // Simpan instance ke ref
+        };
+        loadFfmpeg();
+    }, []);
 
     const copy = () => {
         navigator.clipboard.writeText(caption);
@@ -135,20 +120,26 @@ export default function Page() {
             if (data.carousel_media === undefined) {
                 if (data.is_video) {
                     setVideoURL(`${data.video_versions[1].url}&dl=1`)
-                    console.log('video');
-                }
-                setOriginalCaption(data.caption.text);
-                setCaption(data.caption.text);
-                setOwner(data.user.username);
-
-                if (repost) {
-                    setCaption(`${data.caption.text}\n\nRepost : @${data.user.username}\n\n${hashtag.join(" ")}`);
-                } else {
-                    setCaption(`${data.caption.text}\n\n${hashtag.join(" ")}`);
                 }
 
-                toast.closeAll();
+            } else {
+                for (const dt of data.carousel_media) {
+                    if (dt.is_video) {
+                        setVideoURL(`${dt.video_versions[1].url}&dl=1`)
+                    }
+                }
             }
+
+            setOriginalCaption(data.caption.text);
+            setOwner(data.user.username);
+
+            if (repost) {
+                setCaption(`${data.caption.text}\n\nRepost : @${data.user.username}\n\n${hashtag.join(" ")}`);
+            } else {
+                setCaption(`${data.caption.text}\n\n${hashtag.join(" ")}`);
+            }
+
+            toast.closeAll();
         } catch (e) {
             toast.closeAll();
             showToast("Error", 1, (e as Error).message);
@@ -174,6 +165,22 @@ export default function Page() {
         setTitle(text)
     }
 
+    function getVideoResolution(url: string): Promise<{ width: number, height: number }> {
+        return new Promise((resolve, reject) => {
+            const video = document.createElement('video');
+            video.src = url;
+
+            // Tunggu sampai metadata video (termasuk resolusi) tersedia
+            video.onloadedmetadata = () => {
+                resolve({ width: video.videoWidth, height: video.videoHeight });
+            };
+
+            video.onerror = (error) => {
+                reject('Gagal memuat video: ' + error);
+            };
+        });
+    }
+
     const render = async () => {
 
         const element = document.getElementById("canvas");
@@ -183,11 +190,25 @@ export default function Page() {
             return;
         }
 
+        const videoRes = {
+            width: 0,
+            height: 0
+        };
+
+        getVideoResolution(videoURL)
+            .then(({ width, height }) => {
+                videoRes.width = width;
+                videoRes.height = height;
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
         const dataUrl = await htmlToImage.toPng(element, {
             style: {
                 backgroundColor: 'transparent',  // Pastikan latar belakang transparan
                 border: 'none',                   // Hapus border jika ada
-                margin: '0'                        // Hapus margin jika ada
+                margin: '0',                      // Hapus margin jika ada
             }
         });
 
@@ -209,26 +230,28 @@ export default function Page() {
             duration: null
         })
 
+
+
         const ffmpeg = ffmpegRef.current
         await ffmpeg.writeFile('input.mp4', await fetchFile(videoURL))
         await ffmpeg.writeFile('title.png', await fetchFile(dataUrl))
-        await ffmpeg.writeFile('logo.png', await fetchFile('/images/logo-pd.png'))
+        await ffmpeg.writeFile('watermark.png', await fetchFile('/images/logo-pd-watermark.png'))
 
         await ffmpeg.exec([
             "-i", "input.mp4",
             "-i", "title.png",
-            "-i", "logo.png",
+            "-i", "watermark.png",
             "-filter_complex",
-            "[1:v]scale=iw*0.3:-1[img1]; [2:v]scale=iw*0.1:-1[img2]; [0:v][img1]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2:enable='lt(t,3)'[tmp]; [tmp][img2]overlay=(main_w-overlay_w)/2:20",
+            `[1:v]scale=${videoRes.width}:-1[img1]; [2:v]scale=${videoRes.width}*0.3:-1[img2]; [0:v][img1]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2:enable='lt(t,3)'[tmp]; [tmp][img2]overlay=(main_w-overlay_w)/2:(main_h-overlay_w)/2`,
             "-preset", "superfast",
             "output.mp4",
         ]);
 
-        const dataFF = (await ffmpeg.readFile('output.mp4')) as any
+        const dataFF = (await ffmpeg.readFile('output.mp4'))
 
         if (videoRef.current) {
             videoRef.current.src = URL.createObjectURL(
-                new Blob([dataFF.buffer], { type: "video/mp4" })
+                new Blob([dataFF], { type: "video/mp4" })
             );
 
             toast.closeAll()
@@ -293,7 +316,7 @@ export default function Page() {
                             value={caption}
                             style={{ whiteSpace: "pre-wrap" }}
                             size="sm"
-                            rows={5}
+                            rows={caption ? 10 : 3}
                             onChange={(e) => {
                                 setCaption(e.target.value);
                             }}
@@ -356,6 +379,7 @@ export default function Page() {
                             ref={videoRef}
                             controls
                         ></video>
+
                     </CardBody>
                 </Card>
             </SimpleGrid>
