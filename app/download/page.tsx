@@ -24,18 +24,18 @@ import {
   FormLabel,
   Center,
   Text,
-  Container
+  Container,
 } from "@chakra-ui/react";
 import { Icon, useToast } from "@chakra-ui/react";
 import { FaPaste, FaDownload, FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import * as htmlToImage from "html-to-image";
-import { Roboto } from 'next/font/google'
+import { Roboto } from "next/font/google";
 
 const roboto = Roboto({
-  weight: '700',
-  subsets: ['latin'],
-})
+  weight: "700",
+  subsets: ["latin"],
+});
 
 interface IMedia {
   url: string;
@@ -52,7 +52,6 @@ export default function Page() {
   const [repost, setRepost] = useState(true);
   const [gambar, setGambar] = useState("");
   const [title, setTitle] = useState(``);
-
 
   const hashtag = ["#planetdenpasar", "#planetkitabali", "#bali", "#infonetizenbali", "#infosemetonbali"];
 
@@ -77,7 +76,6 @@ export default function Page() {
     },
     [toast]
   );
-
 
   const getInstagramShortcode = () => {
     const regex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:p|reel)\/([A-Za-z0-9-_]+)/;
@@ -132,14 +130,12 @@ export default function Page() {
       const links: IMedia[] = [];
 
       if (data.carousel_media === undefined) {
-
         if (data.is_video) {
           links.push({
             url: `${data.video_versions[1].url}&dl=1`,
             title: "Download Video",
           });
         }
-
       } else {
         let i = 1;
         for (const dt of data.carousel_media) {
@@ -164,7 +160,7 @@ export default function Page() {
       });
 
       const fd = new FormData();
-      fd.append('mediaId', data.fbid);
+      fd.append("mediaId", data.fbid);
 
       // const res2 = await fetch(`/api/instagram`, { method: 'POST', body: fd });
       // const data2 = await res2.json();
@@ -179,7 +175,6 @@ export default function Page() {
       setOriginalCaption(data.caption.text);
       setOwner(data.user.username);
       setMedia(links);
-
 
       if (repost) {
         setCaption(`${data.caption.text}\n\nRepost : @${data.user.username}\n\n${hashtag.join(" ")}`);
@@ -243,13 +238,13 @@ export default function Page() {
   };
 
   const capitalizeWords = () => {
-    const text =
-      title.split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-        .join(' ');
+    const text = title
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
 
-    setTitle(text)
-  }
+    setTitle(text);
+  };
 
   return (
     <VStack divider={<StackDivider borderColor="gray.200" />} align="stretch">
@@ -361,13 +356,7 @@ export default function Page() {
                       onChange={(e) => setTitle(e.target.value)}
                     />
                   </FormControl>
-                  <Button
-                    onClick={() => capitalizeWords()}
-                    colorScheme="teal"
-                    size="sm"
-                    mt={4}
-                    ml={1}
-                  >
+                  <Button onClick={() => capitalizeWords()} colorScheme="teal" size="sm" mt={4} ml={1}>
                     Capitalize
                   </Button>
                   <Button
@@ -385,25 +374,15 @@ export default function Page() {
           </Card>
 
           <Center id="canvas" style={{ position: "relative", width: 400, height: 500 }}>
-            <Image
-              src="/images/logo-pd.png"
-              w={100}
-              style={{ position: "absolute", top: 20 }}
-              alt="logo white"
-            />
+            <Image src="/images/logo-pd.png" w={100} style={{ position: "absolute", top: 20 }} alt="logo white" />
             <Image src={gambar ? gambar : "/images/no-image.jpg"} w={400} h={500} fit="cover" alt="media" />
             <Container
-              style={{ position: "absolute", bottom: 60, boxShadow: '7px 7px #148b9d' }}
+              style={{ position: "absolute", bottom: 60, boxShadow: "7px 7px #148b9d" }}
               bg="rgba(255,255,255,0.9)"
               w="85%"
               p={2}
             >
-              <Text
-                fontSize={25}
-                className={roboto.className}
-                textAlign="center"
-                lineHeight={1.25}
-              >
+              <Text fontSize={25} className={roboto.className} textAlign="center" lineHeight={1.25}>
                 {title}
               </Text>
             </Container>

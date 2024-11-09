@@ -42,11 +42,13 @@ const roboto = Roboto({
 export default function Page() {
   const [url, setUrl] = useState("");
   const [videoURL, setVideoURL] = useState("");
+  const [videoSrc, setVideoSrc] = useState("");
   const [originalCaption, setOriginalCaption] = useState("");
   const [caption, setCaption] = useState("");
   const [repost, setRepost] = useState(true);
   const [owner, setOwner] = useState("");
   const [title, setTitle] = useState(``);
+  const [fbid, setFbid] = useState("");
   const [ffmpeg, setFfmpeg] = useState<FFmpeg | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -130,6 +132,7 @@ export default function Page() {
 
       setOriginalCaption(data.caption.text);
       setOwner(data.user.username);
+      setFbid(data.fbid);
 
       if (repost) {
         setCaption(`${data.caption.text}\n\nRepost : @${data.user.username}\n\n${hashtag.join(" ")}`);
@@ -251,9 +254,17 @@ export default function Page() {
 
       if (videoRef.current) {
         videoRef.current.src = URL.createObjectURL(new Blob([dataFF], { type: "video/mp4" }));
+        setVideoSrc(URL.createObjectURL(new Blob([dataFF], { type: "video/mp4" })));
         toast.closeAll();
       }
     }
+  };
+
+  const downloadVideo = (filename: string) => {
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = videoSrc;
+    link.click();
   };
 
   return (
@@ -360,6 +371,9 @@ export default function Page() {
               ref={videoRef}
               controls
             ></video>
+            <Button onClick={() => downloadVideo(`${fbid}.mp4`)} colorScheme="teal" size="sm" mt={4} ml={1}>
+              Download
+            </Button>
           </CardBody>
         </Card>
       </SimpleGrid>
