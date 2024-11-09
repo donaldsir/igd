@@ -29,7 +29,6 @@ export default function Page() {
             </Button>
           </SimpleGrid>
           <SimpleGrid columns={2} spacing={2} mt={2}>
-
             <Button
               colorScheme="teal"
               onClick={() => {
@@ -37,6 +36,14 @@ export default function Page() {
               }}
             >
               IG VIDEO
+            </Button>
+            <Button
+              colorScheme="teal"
+              onClick={() => {
+                router.push(`/frame`);
+              }}
+            >
+              FRAME MAKER
             </Button>
           </SimpleGrid>
         </Box>
