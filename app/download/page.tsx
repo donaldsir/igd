@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, ChangeEvent, FormEvent, useEffect, useRef } from "react";
+import { useState, useCallback, ChangeEvent, FormEvent, useRef } from "react";
 import {
   FormControl,
   Input,
@@ -25,14 +25,11 @@ import {
   Center,
   Text,
   Container,
-  CardFooter,
 } from "@chakra-ui/react";
 import { Icon, useToast } from "@chakra-ui/react";
 import { FaPaste, FaDownload, FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import * as htmlToImage from "html-to-image";
-import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { fetchFile } from "@ffmpeg/util";
 import { Roboto } from "next/font/google";
 
 const roboto = Roboto({
@@ -53,10 +50,8 @@ export default function Page() {
   const [owner, setOwner] = useState("");
   const [media, setMedia] = useState<IMedia[]>([]);
   const [repost, setRepost] = useState(true);
-  const [vidThumbnail, setVidThumbnail] = useState(false);
   const [gambar, setGambar] = useState("");
   const [title, setTitle] = useState(``);
-  const [ffmpeg, setFfmpeg] = useState<FFmpeg | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const hashtag = ["#planetdenpasar", "#planetkitabali", "#bali", "#infonetizenbali", "#infosemetonbali"];
@@ -83,16 +78,6 @@ export default function Page() {
     [toast]
   );
 
-  useEffect(() => {
-    const loadFFmpeg = async () => {
-      const ffmpegInstance = new FFmpeg(); // Menggunakan `FFmpeg` langsung
-      await ffmpegInstance.load();
-      setFfmpeg(ffmpegInstance);
-    };
-
-    loadFFmpeg();
-  }, []);
-
   const getInstagramShortcode = () => {
     const regex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:p|reel)\/([A-Za-z0-9-_]+)/;
     const match = url.match(regex);
@@ -111,8 +96,7 @@ export default function Page() {
     } else {
       setCaption(`${originalCaption}\n\n${hashtag.join(" ")}`);
     }
-
-  }
+  };
 
   const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -126,8 +110,8 @@ export default function Page() {
         duration: null,
       });
 
-      const fileType = selectedFiles[0]['type'];
-      const imageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/jpeg', , 'image/webp'];
+      const fileType = selectedFiles[0]["type"];
+      const imageTypes = ["image/gif", "image/jpeg", "image/png", "image/jpeg", , "image/webp"];
 
       if (imageTypes.includes(fileType)) {
         const blob = new Blob([selectedFiles[0]]);
@@ -135,14 +119,14 @@ export default function Page() {
         setGambar(imgsrc);
       } else {
         if (videoRef.current) {
-          const videoSrc = URL.createObjectURL(new Blob([selectedFiles[0]], { type: "video/mp4" }))
+          const videoSrc = URL.createObjectURL(new Blob([selectedFiles[0]], { type: "video/mp4" }));
           videoRef.current.src = videoSrc;
 
           const videoElement = document.getElementById("video") as HTMLVideoElement;
           const canvasElement = document.getElementById("canvasElement") as HTMLCanvasElement;
 
-          await videoElement.play()
-          videoElement.pause()
+          await videoElement.play();
+          videoElement.pause();
 
           // Set canvas size to video frame size
           canvasElement.width = videoElement.videoWidth;
@@ -154,13 +138,12 @@ export default function Page() {
             context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
           }
 
-          setGambar(canvasElement.toDataURL("image/png"))
+          setGambar(canvasElement.toDataURL("image/png"));
         }
       }
 
-      toast.closeAll()
+      toast.closeAll();
     }
-
   };
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
@@ -190,17 +173,12 @@ export default function Page() {
 
       if (data.carousel_media === undefined) {
         if (data.is_video) {
-
           links.push({
             url: `${data.video_versions[1].url}&dl=1`,
             title: "Download Video",
           });
 
-          if (vidThumbnail) {
-            // ss video sbg thumbnail
-            await videoThumbnail(`${data.video_versions[1].url}&dl=1`)
-          }
-
+          await videoThumbnail(`${data.video_versions[1].url}`);
         }
       } else {
         let i = 1;
@@ -211,11 +189,7 @@ export default function Page() {
               title: `Download Slide #${i}`,
             });
 
-            if (vidThumbnail) {
-              // ss video sbg thumbnail
-              await videoThumbnail(`${data.video_versions[1].url}&dl=1`)
-            }
-
+            await videoThumbnail(`${dt.video_versions[1].url}`);
           } else {
             links.push({
               url: `${dt.thumbnail_url}&dl=1`,
@@ -307,43 +281,30 @@ export default function Page() {
   };
 
   const videoThumbnail = async (url: string) => {
-    if (ffmpeg) {
-      await ffmpeg.load();
-      await ffmpeg.writeFile("input.mp4", await fetchFile(url));
+    if (videoRef.current) {
+      videoRef.current.src = url;
 
-      await ffmpeg.exec([
-        "-i", "input.mp4",
-        "-preset", "superfast",
-        "output.mp4",
-      ]);
+      const videoElement = document.getElementById("video") as HTMLVideoElement;
+      videoElement.crossOrigin = "anonymous";
+      const canvasElement = document.getElementById("canvasElement") as HTMLCanvasElement;
 
-      const dataFF = await ffmpeg.readFile("output.mp4");
+      videoElement.src = url;
+      await videoElement.play();
+      videoElement.pause();
 
-      if (videoRef.current) {
-        const videoSrc = URL.createObjectURL(new Blob([dataFF], { type: "video/mp4" }))
-        videoRef.current.src = videoSrc;
+      // Set canvas size to video frame size
+      canvasElement.width = videoElement.videoWidth;
+      canvasElement.height = videoElement.videoHeight;
 
-        const videoElement = document.getElementById("video") as HTMLVideoElement;
-        const canvasElement = document.getElementById("canvasElement") as HTMLCanvasElement;
-
-        await videoElement.play()
-        videoElement.pause()
-
-        // Set canvas size to video frame size
-        canvasElement.width = videoElement.videoWidth;
-        canvasElement.height = videoElement.videoHeight;
-
-        // Draw the current frame of the video onto the canvas
-        const context = canvasElement.getContext("2d");
-        if (context) {
-          context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-        }
-
-        setGambar(canvasElement.toDataURL("image/png"))
+      // Draw the current frame of the video onto the canvas
+      const context = canvasElement.getContext("2d");
+      if (context) {
+        context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
       }
-    }
 
-  }
+      setGambar(canvasElement.toDataURL("image/png"));
+    }
+  };
 
   return (
     <VStack divider={<StackDivider borderColor="gray.200" />} align="stretch">
@@ -380,16 +341,9 @@ export default function Page() {
                       </Button>
                     </InputRightElement>
                   </InputGroup>
-                  <Flex>
-                    <Checkbox onChange={(e) => setVidThumbnail(e.target.checked)}>
-                      Video Thumbnail
-                    </Checkbox>
-                    <Spacer />
-                    <Button type="submit" leftIcon={<FaDownload />} colorScheme="teal" size="sm" mt={4} >
-                      DOWNLOAD
-                    </Button>
-                  </Flex>
-
+                  <Button type="submit" leftIcon={<FaDownload />} colorScheme="teal" size="sm" mt={4} width="100%">
+                    DOWNLOAD
+                  </Button>
                 </FormControl>
               </form>
               {media.length > 0 && (
@@ -475,23 +429,17 @@ export default function Page() {
                     Download Result
                   </Button>
                 </CardBody>
-              </Card>
-            </CardBody>
-            <CardFooter>
-              <CardFooter>
                 <video
                   id="video"
                   style={{
-                    display: "none"
+                    display: "none",
                   }}
                   ref={videoRef}
                   controls
                 ></video>
-                <canvas style={{
-                  display: "none"
-                }} id="canvasElement"></canvas>
-              </CardFooter>
-            </CardFooter>
+                <canvas style={{ display: "none" }} id="canvasElement"></canvas>
+              </Card>
+            </CardBody>
           </Card>
 
           <Center id="canvas" style={{ position: "relative", width: 400, height: 500 }}>
