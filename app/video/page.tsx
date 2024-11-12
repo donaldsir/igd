@@ -237,16 +237,12 @@ export default function Page() {
       await ffmpeg.writeFile("watermark.png", await fetchFile("/images/logo-pd-watermark.png"));
 
       await ffmpeg.exec([
-        "-i",
-        "input.mp4",
-        "-i",
-        "title.png",
-        "-i",
-        "watermark.png",
+        "-i", "input.mp4",
+        "-i", "title.png",
+        "-i", "watermark.png",
         "-filter_complex",
-        `[1:v]scale=${videoRes.width}:-1[img1]; [2:v]scale=${videoRes.width}*0.3:-1[img2]; [0:v][img1]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2:enable='lt(t,3)'[tmp]; [tmp][img2]overlay=(main_w-overlay_w)/2:(main_h-overlay_w)/2`,
-        "-preset",
-        "superfast",
+        `[1:v]scale=${videoRes.width}:-1[img1]; [2:v]scale=${videoRes.width}*0.3:-1[img2]; [0:v][img1]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2:enable='lt(t,3)'[tmp]; [tmp][img2]overlay=(main_w-overlay_w)/2:25`,
+        "-preset", "superfast",
         "output.mp4",
       ]);
 

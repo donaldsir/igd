@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, ChangeEvent, FormEvent } from "react";
+import { useState, useCallback, ChangeEvent, FormEvent, useEffect, useRef } from "react";
 import {
   FormControl,
   Input,
@@ -25,11 +25,14 @@ import {
   Center,
   Text,
   Container,
+  CardFooter,
 } from "@chakra-ui/react";
 import { Icon, useToast } from "@chakra-ui/react";
 import { FaPaste, FaDownload, FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import * as htmlToImage from "html-to-image";
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { fetchFile } from "@ffmpeg/util";
 import { Roboto } from "next/font/google";
 
 const roboto = Roboto({
@@ -50,8 +53,11 @@ export default function Page() {
   const [owner, setOwner] = useState("");
   const [media, setMedia] = useState<IMedia[]>([]);
   const [repost, setRepost] = useState(true);
+  const [vidThumbnail, setVidThumbnail] = useState(false);
   const [gambar, setGambar] = useState("");
   const [title, setTitle] = useState(``);
+  const [ffmpeg, setFfmpeg] = useState<FFmpeg | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const hashtag = ["#planetdenpasar", "#planetkitabali", "#bali", "#infonetizenbali", "#infosemetonbali"];
 
@@ -77,6 +83,16 @@ export default function Page() {
     [toast]
   );
 
+  useEffect(() => {
+    const loadFFmpeg = async () => {
+      const ffmpegInstance = new FFmpeg(); // Menggunakan `FFmpeg` langsung
+      await ffmpegInstance.load();
+      setFfmpeg(ffmpegInstance);
+    };
+
+    loadFFmpeg();
+  }, []);
+
   const getInstagramShortcode = () => {
     const regex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:p|reel)\/([A-Za-z0-9-_]+)/;
     const match = url.match(regex);
@@ -95,25 +111,68 @@ export default function Page() {
     } else {
       setCaption(`${originalCaption}\n\n${hashtag.join(" ")}`);
     }
-  };
 
-  const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  }
+
+  const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     const selectedFiles = files as FileList;
 
-    const blob = new Blob([selectedFiles?.[0]]);
-    const imgsrc = URL.createObjectURL(blob);
+    if (selectedFiles) {
+      toast({
+        title: "Please wait",
+        description: "Rendering video...",
+        status: "loading",
+        duration: null,
+      });
 
-    const img = new window.Image();
+      const fileType = selectedFiles[0]['type'];
+      const imageTypes = ['image/gif', 'image/jpeg', 'image/png', 'image/jpeg', , 'image/webp'];
 
-    img.src = imgsrc;
+      if (imageTypes.includes(fileType)) {
+        const blob = new Blob([selectedFiles[0]]);
+        const imgsrc = URL.createObjectURL(blob);
+        setGambar(imgsrc);
+      } else {
+        if (videoRef.current) {
+          const videoSrc = URL.createObjectURL(new Blob([selectedFiles[0]], { type: "video/mp4" }))
+          videoRef.current.src = videoSrc;
 
-    setGambar(imgsrc);
+          const videoElement = document.getElementById("video") as HTMLVideoElement;
+          const canvasElement = document.getElementById("canvasElement") as HTMLCanvasElement;
+
+          await videoElement.play()
+          videoElement.pause()
+
+          // Set canvas size to video frame size
+          canvasElement.width = videoElement.videoWidth;
+          canvasElement.height = videoElement.videoHeight;
+
+          // Draw the current frame of the video onto the canvas
+          const context = canvasElement.getContext("2d");
+          if (context) {
+            context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+          }
+
+          setGambar(canvasElement.toDataURL("image/png"))
+        }
+      }
+
+      toast.closeAll()
+    }
+
   };
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    showToast("Loading", 4, "Please wait...");
+
+    toast({
+      title: "Please wait",
+      description: "Preparing media and thumbnail...",
+      status: "loading",
+      duration: null,
+    });
+
     const shortcode = getInstagramShortcode();
     const apiRapid = `https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${shortcode}&include_insights=true`;
 
@@ -131,10 +190,17 @@ export default function Page() {
 
       if (data.carousel_media === undefined) {
         if (data.is_video) {
+
           links.push({
             url: `${data.video_versions[1].url}&dl=1`,
             title: "Download Video",
           });
+
+          if (vidThumbnail) {
+            // ss video sbg thumbnail
+            await videoThumbnail(`${data.video_versions[1].url}&dl=1`)
+          }
+
         }
       } else {
         let i = 1;
@@ -144,6 +210,12 @@ export default function Page() {
               url: `${dt.video_versions[1].url}&dl=1`,
               title: `Download Slide #${i}`,
             });
+
+            if (vidThumbnail) {
+              // ss video sbg thumbnail
+              await videoThumbnail(`${data.video_versions[1].url}&dl=1`)
+            }
+
           } else {
             links.push({
               url: `${dt.thumbnail_url}&dl=1`,
@@ -158,18 +230,6 @@ export default function Page() {
         url: `${data.thumbnail_url}&dl=1`,
         title: `Download Thumbnail`,
       });
-
-      const fd = new FormData();
-      fd.append("mediaId", data.fbid);
-
-      // const res2 = await fetch(`/api/instagram`, { method: 'POST', body: fd });
-      // const data2 = await res2.json();
-
-      // if (data2.success) {
-      //   console.log(data2.result)
-      // } else {
-      //   console.log(data2.error)
-      // }
 
       setEmbed(`https://www.instagram.com/p/${shortcode}/embed`);
       setOriginalCaption(data.caption.text);
@@ -246,6 +306,45 @@ export default function Page() {
     setTitle(text);
   };
 
+  const videoThumbnail = async (url: string) => {
+    if (ffmpeg) {
+      await ffmpeg.load();
+      await ffmpeg.writeFile("input.mp4", await fetchFile(url));
+
+      await ffmpeg.exec([
+        "-i", "input.mp4",
+        "-preset", "superfast",
+        "output.mp4",
+      ]);
+
+      const dataFF = await ffmpeg.readFile("output.mp4");
+
+      if (videoRef.current) {
+        const videoSrc = URL.createObjectURL(new Blob([dataFF], { type: "video/mp4" }))
+        videoRef.current.src = videoSrc;
+
+        const videoElement = document.getElementById("video") as HTMLVideoElement;
+        const canvasElement = document.getElementById("canvasElement") as HTMLCanvasElement;
+
+        await videoElement.play()
+        videoElement.pause()
+
+        // Set canvas size to video frame size
+        canvasElement.width = videoElement.videoWidth;
+        canvasElement.height = videoElement.videoHeight;
+
+        // Draw the current frame of the video onto the canvas
+        const context = canvasElement.getContext("2d");
+        if (context) {
+          context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+        }
+
+        setGambar(canvasElement.toDataURL("image/png"))
+      }
+    }
+
+  }
+
   return (
     <VStack divider={<StackDivider borderColor="gray.200" />} align="stretch">
       <Box>
@@ -281,9 +380,16 @@ export default function Page() {
                       </Button>
                     </InputRightElement>
                   </InputGroup>
-                  <Button type="submit" leftIcon={<FaDownload />} colorScheme="teal" size="sm" mt={4} width="100%">
-                    DOWNLOAD
-                  </Button>
+                  <Flex>
+                    <Checkbox onChange={(e) => setVidThumbnail(e.target.checked)}>
+                      Video Thumbnail
+                    </Checkbox>
+                    <Spacer />
+                    <Button type="submit" leftIcon={<FaDownload />} colorScheme="teal" size="sm" mt={4} >
+                      DOWNLOAD
+                    </Button>
+                  </Flex>
+
                 </FormControl>
               </form>
               {media.length > 0 && (
@@ -342,7 +448,7 @@ export default function Page() {
                 <CardBody>
                   <FormControl>
                     <FormLabel>Image</FormLabel>
-                    <Input type="file" accept="image/*" size="sm" onChange={(e) => onChangeFile(e)} />
+                    <Input type="file" accept="image/*|video/*" size="sm" onChange={(e) => onChangeFile(e)} />
                   </FormControl>
                   <FormControl mt={4}>
                     <FormLabel>
@@ -371,6 +477,21 @@ export default function Page() {
                 </CardBody>
               </Card>
             </CardBody>
+            <CardFooter>
+              <CardFooter>
+                <video
+                  id="video"
+                  style={{
+                    display: "none"
+                  }}
+                  ref={videoRef}
+                  controls
+                ></video>
+                <canvas style={{
+                  display: "none"
+                }} id="canvasElement"></canvas>
+              </CardFooter>
+            </CardFooter>
           </Card>
 
           <Center id="canvas" style={{ position: "relative", width: 400, height: 500 }}>

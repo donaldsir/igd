@@ -40,10 +40,10 @@ export default function Page() {
             <Button
               colorScheme="teal"
               onClick={() => {
-                router.push(`/frame`);
+                router.push(`/thumbnail`);
               }}
             >
-              FRAME MAKER
+              CREATE THUMBNAIL
             </Button>
           </SimpleGrid>
         </Box>

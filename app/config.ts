@@ -70,4 +70,15 @@ export function getVideoResolution(url: string): Promise<{ width: number, height
             reject('Gagal memuat video: ' + error);
         };
     });
+
 }
+
+export function capitalizeWords(title: string): string {
+    const text =
+        title.split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+
+    return text
+}
+
