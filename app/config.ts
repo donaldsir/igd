@@ -82,3 +82,11 @@ export function capitalizeWords(title: string): string {
     return text
 }
 
+export function dateMySql(date: Date) {
+    const dtDate = new Date(date);
+    const dtShort = dtDate.toLocaleDateString('en-GB', { dateStyle: "short" })
+    const arrDt = dtShort.split("/")
+
+    return `${arrDt[2]}-${arrDt[1]}-${arrDt[0]}`
+}
+
