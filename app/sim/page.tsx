@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FormControl,
   Input,
@@ -18,7 +18,6 @@ import {
   Text,
   Center,
   Container,
-  CardFooter,
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa";
@@ -58,7 +57,6 @@ export default function Page() {
   const [jadwalSIM2, setJadwalSIM2] = useState<Array<iJadwal>>([]);
   const [top1, setTop1] = useState(0);
   const [tanggal, setTanggal] = useState(dateMySql(new Date()));
-  const [title, setTitle] = useState(``);
 
   useEffect(() => {
     async function fetchData() {
@@ -96,36 +94,14 @@ export default function Page() {
       .toUpperCase(); // Ubah semua karakter menjadi huruf besar
   }
 
-  function getDayFromDate(date: string | Date): string {
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const onChangeTanggal = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTanggal(e.target.value);
 
-    // Parse the input date
-    const parsedDate = typeof date === "string" ? new Date(date) : date;
+    const jadwal1: Array<iJadwal> = [];
+    const jadwal2: Array<iJadwal> = [];
+    const dtFormat = formatDate(e.target.value);
 
-    // Ensure it's a valid date
-    if (isNaN(parsedDate.getTime())) {
-      throw new Error("Invalid date format");
-    }
-
-    // Get the day of the week
-    return days[parsedDate.getDay()];
-  }
-
-  const filter = () => {
-    let jadwal1: Array<iJadwal> = [];
-    let jadwal2: Array<iJadwal> = [];
-    const dtFormat = formatDate(tanggal);
-
-    if (getDayFromDate(tanggal) !== "Sunday") {
-      jadwal1.push({
-        nama: "POLRESTA DENPASAR",
-        lokasi: "Polresta Denpasar",
-        waktu: "08:00 WITA s/d selesai",
-      });
-    }
-
-    let i = 0;
-    for (var key in json) {
+    for (const key in json) {
       const array = json[key as keyof iSIM];
       const filter = array.filter((array) => array.tanggal === dtFormat);
 
@@ -136,7 +112,7 @@ export default function Page() {
           waktu: filter[0].waktu,
         };
 
-        if (jadwal1.length < 5) {
+        if (jadwal1.length < 6) {
           jadwal1.push(dt);
         } else {
           jadwal2.push(dt);
@@ -144,7 +120,38 @@ export default function Page() {
       }
     }
 
-    let topJadwal1 = 100 + (5 - jadwal1.length) * 20;
+    const topJadwal1 = 80 + (6 - jadwal1.length) * 20;
+
+    setJadwalSIM1(jadwal1);
+    setJadwalSIM2(jadwal2);
+    setTop1(topJadwal1);
+  };
+
+  const filter = () => {
+    const jadwal1: Array<iJadwal> = [];
+    const jadwal2: Array<iJadwal> = [];
+    const dtFormat = formatDate(tanggal);
+
+    for (const key in json) {
+      const array = json[key as keyof iSIM];
+      const filter = array.filter((array) => array.tanggal === dtFormat);
+
+      if (filter.length > 0) {
+        const dt = {
+          nama: formatString(key),
+          lokasi: filter[0].lokasi,
+          waktu: filter[0].waktu,
+        };
+
+        if (jadwal1.length < 6) {
+          jadwal1.push(dt);
+        } else {
+          jadwal2.push(dt);
+        }
+      }
+    }
+
+    const topJadwal1 = 80 + (6 - jadwal1.length) * 20;
 
     setJadwalSIM1(jadwal1);
     setJadwalSIM2(jadwal2);
@@ -169,7 +176,7 @@ export default function Page() {
 
     if (!element) {
       toast({
-        title: title,
+        title: "Error",
         description: `Element with id "${elementId}" not found.`,
         status: "error",
         duration: 9000,
@@ -209,7 +216,7 @@ export default function Page() {
             <CardBody>
               <FormControl>
                 <FormLabel>Date</FormLabel>
-                <Input type="date" value={tanggal} onChange={(e) => setTanggal(e.target.value)} />
+                <Input type="date" value={tanggal} onChange={(e) => onChangeTanggal(e)} />
               </FormControl>
               <Button onClick={filter} colorScheme="teal" size="sm" mt={4} ml={1}>
                 Get Data

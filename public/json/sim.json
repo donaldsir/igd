@@ -1,11 +1,4 @@
 {
-  "polresta_denpasar": [
-    {
-      "tanggal": "Senin s/d Sabtu, November 2024",
-      "lokasi": "Polresta Denpasar",
-      "waktu": "08:00 WITA s/d selesai"
-    }
-  ],
   "polres_badung": [
     {
       "tanggal": "1 November 2024",
@@ -164,8 +157,8 @@
       "waktu": "08:30 WITA s/d selesai"
     }
   ],
-  "polres_buleleng" :[
-  {
+  "polres_buleleng": [
+    {
       "hari": "Senin",
       "tanggal": "4 November 2024",
       "lokasi": "Parkiran Krisna Temukus, Banjar",
@@ -190,7 +183,7 @@
       "waktu": "08:00 WITA s/d selesai"
     }
   ],
-  "polres_tabanan":[
+  "polres_tabanan": [
     {
       "tanggal": "5 November 2024",
       "hari": "Selasa",
@@ -252,7 +245,7 @@
       "waktu": "18.00 WITA s/d Selesai"
     }
   ],
-  "polres_gianyar":[
+  "polres_gianyar": [
     {
       "tanggal": "5 November 2024",
       "hari": "Selasa",
@@ -302,7 +295,7 @@
       "waktu": "07.00 WITA s/d Selesai"
     }
   ],
-  "polres_klungkung":[
+  "polres_klungkung": [
     {
       "tanggal": "10 November 2024",
       "hari": "Senin",
@@ -316,7 +309,7 @@
       "waktu": "09.00 WITA - 13.00 WITA"
     }
   ],
-  "polres_bangli":[
+  "polres_bangli": [
     {
       "tanggal": "15 November 2024",
       "hari": "Rabu",
@@ -330,7 +323,7 @@
       "waktu": "08.00 WITA - 11.00 WITA"
     }
   ],
-  "polres_jembrana":[
+  "polres_jembrana": [
     {
       "tanggal": "5 November 2024",
       "hari": "Selasa",
@@ -380,7 +373,7 @@
       "waktu": "08.00 WITA s/d Selesai"
     }
   ],
-  "polres_karangasem":[
+  "polres_karangasem": [
     {
       "tanggal": "1 November 2024",
       "hari": "Jumat",
