@@ -18,6 +18,8 @@ import {
   Text,
   Center,
   Container,
+  Textarea,
+  CardHeader
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa";
@@ -55,6 +57,7 @@ export default function Page() {
   const [json, setJson] = useState<iSIM>();
   const [jadwalSIM1, setJadwalSIM1] = useState<Array<iJadwal>>([]);
   const [jadwalSIM2, setJadwalSIM2] = useState<Array<iJadwal>>([]);
+  const [caption, setCaption] = useState('')
   const [top1, setTop1] = useState(0);
   const [tanggal, setTanggal] = useState(dateMySql(new Date()));
 
@@ -122,6 +125,18 @@ export default function Page() {
 
     const topJadwal1 = 80 + (6 - jadwal1.length) * 20;
 
+    const text = `SIM Keliling Polda Bali ${dtFormat} menyediakan layanan perpanjangan SIM bagi warga Bali dengan persyaratan sebagai berikut :
+
+    - Membawa E-KTP asli beserta fotocopy sebanyak 2 lembar.
+    - Membawa SIM asli yang masih aktif masa berlakunya, dilengkapi dengan fotocopy 2 lembar.
+    - Menyertakan surat keterangan sehat jasmani dan rohani (psikologi).
+
+Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk kelancaran proses perpanjangan SIM Anda.
+
+#planetdenpasar #planetkitabali  #infonetizenbali #infosemetonbali #simkelilingbali #simA #simC #bali`
+
+    setCaption(text)
+
     setJadwalSIM1(jadwal1);
     setJadwalSIM2(jadwal2);
     setTop1(topJadwal1);
@@ -153,6 +168,17 @@ export default function Page() {
 
     const topJadwal1 = 80 + (6 - jadwal1.length) * 20;
 
+    const text = `SIM Keliling Polda Bali ${dtFormat} menyediakan layanan perpanjangan SIM bagi warga Bali dengan persyaratan sebagai berikut :
+
+    - Membawa E-KTP asli beserta fotocopy sebanyak 2 lembar.
+    - Membawa SIM asli yang masih aktif masa berlakunya, dilengkapi dengan fotocopy 2 lembar.
+    - Menyertakan surat keterangan sehat jasmani dan rohani (psikologi).
+
+Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk kelancaran proses perpanjangan SIM Anda.
+
+#planetdenpasar #planetkitabali  #infonetizenbali #infosemetonbali #simkelilingbali #simA #simC #bali`
+
+    setCaption(text)
     setJadwalSIM1(jadwal1);
     setJadwalSIM2(jadwal2);
     setTop1(topJadwal1);
@@ -169,6 +195,19 @@ export default function Page() {
     const fileName = `pd_${randomString}_${timestamp}`;
 
     return fileName;
+  };
+
+  const copy = () => {
+    navigator.clipboard.writeText(caption);
+
+    toast({
+      title: "Success",
+      description: `Copied to cliboard`,
+      status: "success",
+      duration: 9000,
+      isClosable: true,
+      position: "bottom-left",
+    });
   };
 
   const download = (elementId: string, filename: string) => {
@@ -224,7 +263,22 @@ export default function Page() {
             </CardBody>
           </Card>
           <Card>
+            <CardHeader>
+              <Button onClick={copy} colorScheme="teal" size="sm" disabled={caption ? false : true}>
+                Copy Caption
+              </Button>
+            </CardHeader>
             <CardBody>
+              <Textarea
+                value={caption}
+                style={{ whiteSpace: "pre-wrap" }}
+                size="sm"
+                mb={4}
+                rows={caption ? 10 : 3}
+                onChange={(e) => {
+                  setCaption(e.target.value);
+                }}
+              />
               <Center id="canvas1" style={{ position: "relative", width: 340 }}>
                 <Image src={"/images/sim.jpg"} w={340} fit="cover" alt="media" />
                 <Center style={{ position: "absolute" }} bg="#e21e1f" py={1} px={2} rounded={10} top={2.5} left={4}>

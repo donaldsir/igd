@@ -86,6 +86,7 @@ export default function Page() {
     navigator.clipboard.writeText(caption);
     showToast("Success", 0, "Copied to cliboard");
   };
+
   const paste = async () => {
     try {
       // Check if the browser supports the Clipboard API
