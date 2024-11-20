@@ -227,8 +227,8 @@ export default function Page() {
             <CardBody>
               <Center id="canvas1" style={{ position: "relative", width: 340 }}>
                 <Image src={"/images/sim.jpg"} w={340} fit="cover" alt="media" />
-                <Center style={{ position: "absolute" }} bg="#e21e1f" py={1} px={2} rounded={10} top={3} left={4}>
-                  <Text fontSize={13} className={roboto.className} textAlign="center" color="white">
+                <Center style={{ position: "absolute" }} bg="#e21e1f" py={1} px={2} rounded={10} top={2.5} left={4}>
+                  <Text fontSize={12} className={roboto.className} textAlign="center" color="white">
                     {formatDate(tanggal)}
                   </Text>
                 </Center>
@@ -266,8 +266,8 @@ export default function Page() {
               <CardBody>
                 <Center id="canvas2" style={{ position: "relative", width: 340 }}>
                   <Image src={"/images/sim.jpg"} w={340} fit="cover" alt="media" />
-                  <Center style={{ position: "absolute" }} bg="#e21e1f" py={1} px={2} rounded={10} top={3} left={4}>
-                    <Text fontSize={13} className={roboto.className} textAlign="center" color="white">
+                  <Center style={{ position: "absolute" }} bg="#e21e1f" py={1} px={2} rounded={10} top={2.5} left={4}>
+                    <Text fontSize={12} className={roboto.className} textAlign="center" color="white">
                       {formatDate(tanggal)}
                     </Text>
                   </Center>

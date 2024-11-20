@@ -54,7 +54,7 @@ export const getInstagramShortcode = (url: string) => {
     }
 };
 
-export const hashtag = ["#planetdenpasar", "#planetkitabali", "#bali", "#infonetizenbali", "#infosemetonbali"];
+export const hashtag = ["#planetdenpasar", "#planetkitabali", "#infonetizenbali", "#infosemetonbali", "#bali"];
 
 export function getVideoResolution(url: string): Promise<{ width: number, height: number }> {
     return new Promise((resolve, reject) => {
