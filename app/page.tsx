@@ -40,22 +40,13 @@ export default function Page() {
             <Button
               colorScheme="teal"
               onClick={() => {
-                router.push(`/thumbnail`);
-              }}
-            >
-              CREATE THUMBNAIL
-            </Button>
-          </SimpleGrid>
-          <SimpleGrid columns={2} spacing={2} mt={2}>
-            <Button
-              colorScheme="teal"
-              onClick={() => {
                 router.push(`/sim`);
               }}
             >
               SIM KELILING
             </Button>
           </SimpleGrid>
+
         </Box>
       </VStack>
     </Center>

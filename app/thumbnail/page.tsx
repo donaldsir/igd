@@ -19,6 +19,7 @@ import {
   Text,
   Center,
   Container,
+  CardFooter,
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa";
@@ -38,6 +39,7 @@ export default function Page() {
 
   const [gambar, setGambar] = useState("");
   const [title, setTitle] = useState(``);
+  const [isVideo, setIsVideo] = useState(false)
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,35 +60,47 @@ export default function Page() {
       if (imageTypes.includes(fileType)) {
         const blob = new Blob([selectedFiles[0]]);
         const imgsrc = URL.createObjectURL(blob);
+        setIsVideo(false)
         setGambar(imgsrc);
       } else {
         if (videoRef.current) {
           const videoSrc = URL.createObjectURL(new Blob([selectedFiles[0]], { type: "video/mp4" }));
           videoRef.current.src = videoSrc;
-
-          const videoElement = document.getElementById("video") as HTMLVideoElement;
-          const canvasElement = document.getElementById("canvasElement") as HTMLCanvasElement;
-
-          await videoElement.play();
-          videoElement.pause();
-
-          // Set canvas size to video frame size
-          canvasElement.width = videoElement.videoWidth;
-          canvasElement.height = videoElement.videoHeight;
-
-          // Draw the current frame of the video onto the canvas
-          const context = canvasElement.getContext("2d");
-          if (context) {
-            context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-          }
-
-          setGambar(canvasElement.toDataURL("image/png"));
+          setIsVideo(true)
+          setGambar("")
         }
       }
 
       toast.closeAll();
     }
   };
+
+  const screenShotVideo = () => {
+    const videoElement = document.getElementById("video") as HTMLVideoElement;
+    const canvasElement = document.getElementById("canvasElement") as HTMLCanvasElement;
+
+    // Set canvas size to video frame size
+    canvasElement.width = videoElement.videoWidth;
+    canvasElement.height = videoElement.videoHeight;
+
+    // Draw the current frame of the video onto the canvas
+    const context = canvasElement.getContext("2d");
+    if (context) {
+      context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+    }
+
+    setGambar(canvasElement.toDataURL("image/png"));
+  }
+
+  const play = async () => {
+    const videoElement = document.getElementById("video") as HTMLVideoElement;
+    await videoElement.play();
+  }
+
+  const pause = () => {
+    const videoElement = document.getElementById("video") as HTMLVideoElement;
+    videoElement.pause();
+  }
 
   const createFileName = () => {
     // Generate a random string
@@ -163,39 +177,57 @@ export default function Page() {
               <Button onClick={() => setTitle(capitalizeWords(title))} colorScheme="teal" size="sm" mt={4} ml={1}>
                 Capitalize
               </Button>
-              <Button onClick={() => download("canvas", createFileName())} colorScheme="teal" size="sm" mt={4} ml={1}>
-                Download Result
-              </Button>
-              <video
-                id="video"
-                style={{
-                  display: "none",
-                }}
-                ref={videoRef}
-                controls
-              ></video>
-              <canvas
-                style={{
-                  display: "none",
-                }}
-                id="canvasElement"
-              ></canvas>
+
+
             </CardBody>
+            <CardFooter>
+              <VStack>
+                <video
+                  id="video"
+                  ref={videoRef}
+                  controls
+                  style={{ display: isVideo ? "" : "none", marginTop: 10 }}
+                />
+                <canvas
+                  style={{
+                    display: "none",
+                  }}
+                  id="canvasElement"
+                ></canvas>
+
+                <SimpleGrid columns={3} >
+                  <Button style={{ display: isVideo ? "" : "none" }} onClick={play} colorScheme="teal" size="sm" mt={4} ml={1}>
+                    Play
+                  </Button>
+                  <Button style={{ display: isVideo ? "" : "none" }} onClick={pause} colorScheme="teal" size="sm" mt={4} ml={1}>
+                    Pause
+                  </Button>
+                  <Button style={{ display: isVideo ? "" : "none" }} onClick={screenShotVideo} colorScheme="teal" size="sm" mt={4} ml={1}>
+                    Screenshot
+                  </Button>
+                </SimpleGrid>
+              </VStack>
+            </CardFooter>
           </Card>
-          <Center id="canvas" style={{ position: "relative", width: 400, height: 500 }}>
-            <Image src="/images/logo-pd.png" w={100} style={{ position: "absolute", top: 20 }} alt="logo white" />
-            <Image src={gambar ? gambar : "/images/no-image.jpg"} w={400} h={500} fit="cover" alt="media" />
-            <Container
-              style={{ position: "absolute", bottom: 60, boxShadow: "7px 7px #148b9d" }}
-              bg="rgba(255,255,255,0.9)"
-              w="85%"
-              p={2}
-            >
-              <Text fontSize={24} lineHeight={1.1} px={1} className={roboto.className} textAlign="center">
-                {title}
-              </Text>
-            </Container>
+          <Center id="canvas" style={{ position: "relative", width: 380, height: 475 }}>
+            <Image src="/images/logo-pd.png" w={100} style={{ position: "absolute", top: 10 }} alt="logo white" />
+            <Image src={gambar ? gambar : "/images/no-image.jpg"} w={380} h={475} fit="cover" alt="media" />
+            {title !== "" && (
+              <Container
+                style={{ position: "absolute", bottom: 40, boxShadow: "7px 7px #148b9d" }}
+                bg="rgba(255,255,255,0.9)"
+                w="85%"
+                p={2}
+              >
+                <Text fontSize={24} lineHeight={1.1} px={1} className={roboto.className} textAlign="center">
+                  {title}
+                </Text>
+              </Container>
+            )}
           </Center>
+          <Button onClick={() => download("canvas", createFileName())} colorScheme="teal" size="sm" width='100%'>
+            Download Result
+          </Button>
         </SimpleGrid>
       </Box>
     </VStack>
