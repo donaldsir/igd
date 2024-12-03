@@ -32,6 +32,7 @@ import { FaPaste, FaDownload, FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import * as htmlToImage from "html-to-image";
 import { Roboto } from "next/font/google";
+import { hashtag } from "../config";
 
 const roboto = Roboto({
   weight: "700",
@@ -56,7 +57,6 @@ export default function Page() {
   const [isVideo, setIsVideo] = useState(false)
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  const hashtag = ["#planetdenpasar", "#planetkitabali", "#bali", "#infonetizenbali", "#infosemetonbali"];
 
   const router = useRouter();
   const toast = useToast();
