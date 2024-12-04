@@ -11,7 +11,6 @@ import {
   Card,
   CardHeader,
   CardBody,
-  CardFooter,
   Flex,
   Spacer,
   VStack,
@@ -28,7 +27,7 @@ import {
   Container,
 } from "@chakra-ui/react";
 import { Icon, useToast } from "@chakra-ui/react";
-import { FaPaste, FaDownload, FaArrowLeft } from "react-icons/fa";
+import { FaPaste, FaDownload, FaArrowLeft, FaPlay, FaPause, FaCamera } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import * as htmlToImage from "html-to-image";
 import { Roboto } from "next/font/google";
@@ -403,16 +402,30 @@ export default function Page() {
                     id="canvasElement"
                   ></canvas>
 
-                  <SimpleGrid columns={3} >
-                    <Button style={{ display: isVideo ? "" : "none" }} onClick={play} colorScheme="teal" size="sm" mt={4} ml={1}>
-                      Play
-                    </Button>
-                    <Button style={{ display: isVideo ? "" : "none" }} onClick={pause} colorScheme="teal" size="sm" mt={4} ml={1}>
-                      Pause
-                    </Button>
-                    <Button style={{ display: isVideo ? "" : "none" }} onClick={screenShotVideo} colorScheme="teal" size="sm" mt={4} ml={1}>
-                      Screenshot
-                    </Button>
+                  <SimpleGrid columns={6} spacing={3} mt={2}>
+
+                    <IconButton
+                      colorScheme='teal'
+                      aria-label='Play'
+                      icon={<FaPlay />}
+                      style={{ display: isVideo ? "" : "none" }}
+                      onClick={play}
+                    />
+                    <IconButton
+                      colorScheme='teal'
+                      aria-label='Pause'
+                      icon={<FaPause />}
+                      style={{ display: isVideo ? "" : "none" }}
+                      onClick={pause}
+                    />
+                    <IconButton
+                      colorScheme='teal'
+                      aria-label='Screenshot'
+                      icon={<FaCamera />}
+                      style={{ display: isVideo ? "" : "none" }}
+                      onClick={screenShotVideo}
+                    />
+
                   </SimpleGrid>
                   <FormControl mt={4}>
                     <FormLabel>
@@ -431,9 +444,7 @@ export default function Page() {
                   </Button>
 
                 </CardBody>
-                <CardFooter>
 
-                </CardFooter>
               </Card>
             </CardBody>
           </Card>

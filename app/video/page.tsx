@@ -347,18 +347,20 @@ export default function Page() {
             </Button>
           </CardBody>
         </Card>
-        <Center id="canvas" style={{ position: "relative", height: 180, border: "1px solid" }}>
-          <Container
-            style={{ position: "absolute", boxShadow: "7px 7px #148b9d" }}
-            bg="rgba(255,255,255,0.9)"
-            w="85%"
-            p={2}
-          >
-            <Text fontSize={25} className={roboto.className} textAlign="center" lineHeight={1.25}>
-              {title}
-            </Text>
-          </Container>
-        </Center>
+        {title !== "" && (
+          <Center id="canvas" style={{ position: "relative", height: 180, border: "1px solid" }}>
+            <Container
+              style={{ position: "absolute", boxShadow: "7px 7px #148b9d" }}
+              bg="rgba(255,255,255,0.9)"
+              w="85%"
+              p={2}
+            >
+              <Text fontSize={25} className={roboto.className} textAlign="center" lineHeight={1.25}>
+                {title}
+              </Text>
+            </Container>
+          </Center>
+        )}
         <Card>
           <CardBody>
             <video
