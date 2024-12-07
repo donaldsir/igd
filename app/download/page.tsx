@@ -53,9 +53,8 @@ export default function Page() {
   const [repost, setRepost] = useState(true);
   const [gambar, setGambar] = useState("");
   const [title, setTitle] = useState(``);
-  const [isVideo, setIsVideo] = useState(false)
+  const [isVideo, setIsVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
-
 
   const router = useRouter();
   const toast = useToast();
@@ -118,13 +117,13 @@ export default function Page() {
         const blob = new Blob([selectedFiles[0]]);
         const imgsrc = URL.createObjectURL(blob);
         setGambar(imgsrc);
-        setIsVideo(false)
+        setIsVideo(false);
       } else {
         if (videoRef.current) {
           const videoSrc = URL.createObjectURL(new Blob([selectedFiles[0]], { type: "video/mp4" }));
           videoRef.current.src = videoSrc;
-          setIsVideo(true)
-          setGambar("")
+          setIsVideo(true);
+          setGambar("");
         }
       }
 
@@ -147,17 +146,17 @@ export default function Page() {
     }
 
     setGambar(canvasElement.toDataURL("image/png"));
-  }
+  };
 
   const play = async () => {
     const videoElement = document.getElementById("video") as HTMLVideoElement;
     await videoElement.play();
-  }
+  };
 
   const pause = () => {
     const videoElement = document.getElementById("video") as HTMLVideoElement;
     videoElement.pause();
-  }
+  };
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -187,7 +186,7 @@ export default function Page() {
       if (data.carousel_media === undefined) {
         if (data.is_video) {
           links.push({
-            url: `${data.video_versions[1].url}&dl=1`,
+            url: `${data.video_versions[0].url}&dl=1`,
             title: "Download Video",
           });
         }
@@ -196,10 +195,9 @@ export default function Page() {
         for (const dt of data.carousel_media) {
           if (dt.is_video) {
             links.push({
-              url: `${dt.video_versions[1].url}&dl=1`,
+              url: `${dt.video_versions[0].url}&dl=1`,
               title: `Download Slide #${i}`,
             });
-
           } else {
             links.push({
               url: `${dt.thumbnail_url}&dl=1`,
@@ -289,7 +287,6 @@ export default function Page() {
 
     setTitle(text);
   };
-
 
   return (
     <VStack divider={<StackDivider borderColor="gray.200" />} align="stretch">
@@ -389,12 +386,7 @@ export default function Page() {
                     <FormLabel>Image</FormLabel>
                     <Input type="file" accept="image/*|video/*" size="sm" onChange={(e) => onChangeFile(e)} />
                   </FormControl>
-                  <video
-                    id="video"
-                    ref={videoRef}
-                    controls
-                    style={{ display: isVideo ? "" : "none", marginTop: 10 }}
-                  />
+                  <video id="video" ref={videoRef} controls style={{ display: isVideo ? "" : "none", marginTop: 10 }} />
                   <canvas
                     style={{
                       display: "none",
@@ -403,29 +395,27 @@ export default function Page() {
                   ></canvas>
 
                   <SimpleGrid columns={6} spacing={3} mt={2}>
-
                     <IconButton
-                      colorScheme='teal'
-                      aria-label='Play'
+                      colorScheme="teal"
+                      aria-label="Play"
                       icon={<FaPlay />}
                       style={{ display: isVideo ? "" : "none" }}
                       onClick={play}
                     />
                     <IconButton
-                      colorScheme='teal'
-                      aria-label='Pause'
+                      colorScheme="teal"
+                      aria-label="Pause"
                       icon={<FaPause />}
                       style={{ display: isVideo ? "" : "none" }}
                       onClick={pause}
                     />
                     <IconButton
-                      colorScheme='teal'
-                      aria-label='Screenshot'
+                      colorScheme="teal"
+                      aria-label="Screenshot"
                       icon={<FaCamera />}
                       style={{ display: isVideo ? "" : "none" }}
                       onClick={screenShotVideo}
                     />
-
                   </SimpleGrid>
                   <FormControl mt={4}>
                     <FormLabel>
@@ -442,9 +432,7 @@ export default function Page() {
                   <Button onClick={() => capitalizeWords()} colorScheme="teal" size="sm" mt={4} ml={1}>
                     Capitalize
                   </Button>
-
                 </CardBody>
-
               </Card>
             </CardBody>
           </Card>
@@ -464,14 +452,8 @@ export default function Page() {
                 </Text>
               </Container>
             )}
-
           </Center>
-          <Button
-            onClick={() => downloadFrame("canvas", createFileName())}
-            colorScheme="teal"
-            size="sm"
-
-          >
+          <Button onClick={() => downloadFrame("canvas", createFileName())} colorScheme="teal" size="sm">
             Download Thumbnail
           </Button>
         </SimpleGrid>
