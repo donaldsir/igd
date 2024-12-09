@@ -121,12 +121,12 @@ export default function Page() {
 
       if (data.carousel_media === undefined) {
         if (data.is_video) {
-          setVideoURL(`${data.video_versions[1].url}&dl=1`);
+          setVideoURL(`${data.video_versions[0].url}&dl=1`);
         }
       } else {
         for (const dt of data.carousel_media) {
           if (dt.is_video) {
-            setVideoURL(`${dt.video_versions[1].url}&dl=1`);
+            setVideoURL(`${dt.video_versions[0].url}&dl=1`);
           }
         }
       }
@@ -207,7 +207,6 @@ export default function Page() {
 
     const dataUrl = await htmlToImage.toPng(element, {
       style: {
-        backgroundColor: "transparent", // Pastikan latar belakang transparan
         border: "none", // Hapus border jika ada
         margin: "0", // Hapus margin jika ada
       },
@@ -242,7 +241,7 @@ export default function Page() {
         "-i", "title.png",
         "-i", "watermark.png",
         "-filter_complex",
-        `[1:v]scale=${videoRes.width}:-1[img1]; [2:v]scale=${videoRes.width}*0.3:-1[img2]; [0:v][img1]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2:enable='lt(t,3)'[tmp]; [tmp][img2]overlay=(main_w-overlay_w)/2:25`,
+        `[1:v]scale=${videoRes.width}:-1[img1]; [2:v]scale=${videoRes.width}*0.3:-1[img2]; [0:v][img1]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2:enable='lt(t,3)'[tmp]; [tmp][img2]overlay=(main_w-overlay_w)/2:80`,
         "-preset", "superfast",
         "output.mp4",
       ]);
@@ -348,7 +347,7 @@ export default function Page() {
           </CardBody>
         </Card>
         {title !== "" && (
-          <Center id="canvas" style={{ position: "relative", height: 180, border: "1px solid" }}>
+          <Center id="canvas" style={{ position: "relative", height: 180, }}>
             <Container
               style={{ position: "absolute", boxShadow: "7px 7px #148b9d" }}
               bg="rgba(255,255,255,0.9)"
