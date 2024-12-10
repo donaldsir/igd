@@ -447,7 +447,7 @@ export default function Page() {
                 w="85%"
                 p={2}
               >
-                <Text fontSize={25} className={roboto.className} textAlign="center" lineHeight={1.1}>
+                <Text fontSize={24} className={roboto.className} textAlign="center" lineHeight={1.1}>
                   {title}
                 </Text>
               </Container>
