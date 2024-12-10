@@ -60,6 +60,17 @@ export default function Page() {
   const [caption, setCaption] = useState('')
   const [top1, setTop1] = useState(0);
   const [tanggal, setTanggal] = useState(dateMySql(new Date()));
+  const [day, setDay] = useState(new Date().getDay() - 1)
+
+  const days = [
+    'Senin',
+    'Selasa',
+    'Rabu',
+    'Kamis',
+    'Jumat',
+    'Sabtu',
+    'Minggu',
+  ]
 
   useEffect(() => {
     async function fetchData() {
@@ -99,6 +110,7 @@ export default function Page() {
 
   const onChangeTanggal = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTanggal(e.target.value);
+    setDay(new Date(e.target.value).getDay() - 1)
 
     const jadwal1: Array<iJadwal> = [];
     const jadwal2: Array<iJadwal> = [];
@@ -166,7 +178,7 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
       }
     }
 
-    const topJadwal1 = 80 + (6 - jadwal1.length) * 20;
+    const topJadwal1 = 92 + (6 - jadwal1.length) * 20;
 
     const text = `SIM Keliling Polda Bali ${dtFormat} menyediakan layanan perpanjangan SIM bagi warga Bali dengan persyaratan sebagai berikut :
 
@@ -281,14 +293,14 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
               />
               <Center id="canvas1" style={{ position: "relative", width: 340 }}>
                 <Image src={"/images/sim.jpg"} w={340} fit="cover" alt="media" />
-                <Center style={{ position: "absolute" }} bg="#e21e1f" py={1} px={2} rounded={10} top={2.5} left={4}>
-                  <Text fontSize={12} className={roboto.className} textAlign="center" color="white">
-                    {formatDate(tanggal)}
+                <Center style={{ position: "absolute" }} bg="white" px={2} marginTop={-280} >
+                  <Text fontSize={12} className={roboto.className} textAlign="center" color="#e21e1f">
+                    {`${days[day].toUpperCase()}, ${formatDate(tanggal).toUpperCase()}`}
                   </Text>
                 </Center>
 
                 {jadwalSIM1.map?.((dt: iJadwal, index) => (
-                  <Container key={index} style={{ position: "absolute", top: top1 + index * 37 }}>
+                  <Container key={index} style={{ position: "absolute", top: top1 + index * 36 }}>
                     <Center style={{ position: "absolute", left: 10 }} bg="#022c98" w={130} h={8}>
                       <Text fontSize={11} className={roboto.className} textAlign="center" color="white">
                         {dt.nama}

@@ -2,131 +2,157 @@
   "polres_badung": [
     {
       "tanggal": "2 Desember 2024",
+      "hari": "Senin",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "9 Desember 2024",
+      "hari": "Senin",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "16 Desember 2024",
+      "hari": "Senin",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "23 Desember 2024",
+      "hari": "Senin",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "30 Desember 2024",
+      "hari": "Senin",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "3 Desember 2024",
+      "hari": "Selasa",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "10 Desember 2024",
+      "hari": "Selasa",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "17 Desember 2024",
+      "hari": "Selasa",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "24 Desember 2024",
+      "hari": "Selasa",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "31 Desember 2024",
+      "hari": "Selasa",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
-     {
+    {
       "tanggal": "4 Desember 2024",
+      "hari": "Rabu",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "11 Desember 2024",
+      "hari": "Rabu",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "18 Desember 2024",
+      "hari": "Rabu",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "25 Desember 2024",
+      "hari": "Rabu",
       "lokasi": "TL Banjar Pengubengan Kangin",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "5 Desember 2024",
+      "hari": "Kamis",
       "lokasi": "MALL PELAYANAN PUBLIK PUSPEM",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "12 Desember 2024",
+      "hari": "Kamis",
       "lokasi": "MALL PELAYANAN PUBLIK PUSPEM",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "19 Desember 2024",
+      "hari": "Kamis",
       "lokasi": "MALL PELAYANAN PUBLIK PUSPEM",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "26 Desember 2024",
+      "hari": "Kamis",
       "lokasi": "MALL PELAYANAN PUBLIK PUSPEM",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "6 Desember 2024",
+      "hari": "Jumat",
       "lokasi": "MALL PELAYANAN PUBLIK PUSPEM",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "13 Desember 2024",
+      "hari": "Jumat",
       "lokasi": "MALL PELAYANAN PUBLIK PUSPEM",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "20 Desember 2024",
+      "hari": "Jumat",
       "lokasi": "MALL PELAYANAN PUBLIK PUSPEM",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "27 Desember 2024",
+      "hari": "Jumat",
       "lokasi": "MALL PELAYANAN PUBLIK PUSPEM",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "7 Desember 2024",
+      "hari": "Sabtu",
       "lokasi": "MALL PELAYANAN PUBLIK PUSPEM",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "14 Desember 2024",
+      "hari": "Sabtu",
       "lokasi": "MALL PELAYANAN PUBLIK PUSPEM",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "21 Desember 2024",
+      "hari": "Sabtu",
       "lokasi": "MALL PELAYANAN PUBLIK PUSPEM",
       "waktu": "08.30 WITA s/d selesai"
     },
     {
       "tanggal": "28 Desember 2024",
+      "hari": "Sabtu",
       "lokasi": "MALL PELAYANAN PUBLIK PUSPEM",
       "waktu": "08.30 WITA s/d selesai"
     }
@@ -134,46 +160,55 @@
   "polres_tabanan": [
     {
       "tanggal": "3 Desember 2024",
+      "hari": "Selasa",
       "lokasi": "Astra Motor Grokgak Tabanan",
       "waktu": "08.00 WITA s/d selesai"
     },
     {
       "tanggal": "10 Desember 2024",
+      "hari": "Selasa",
       "lokasi": "Astra Motor Grokgak Tabanan",
       "waktu": "08.00 WITA s/d selesai"
     },
     {
       "tanggal": "17 Desember 2024",
+      "hari": "Selasa",
       "lokasi": "Astra Motor Grokgak Tabanan",
       "waktu": "08.00 WITA s/d selesai"
     },
     {
       "tanggal": "5 Desember 2024",
+      "hari": "Kamis",
       "lokasi": "Kurnia Seafood",
       "waktu": "08.00 WITA s/d 12.00 WITA"
     },
     {
       "tanggal": "12 Desember 2024",
+      "hari": "Kamis",
       "lokasi": "Kurnia Seafood",
       "waktu": "08.00 WITA s/d 12.00 WITA"
     },
     {
       "tanggal": "19 Desember 2024",
+      "hari": "Kamis",
       "lokasi": "Kurnia Seafood",
       "waktu": "08.00 WITA s/d 12.00 WITA"
     },
     {
       "tanggal": "7 Desember 2024",
+      "hari": "Sabtu",
       "lokasi": "Pasar Senggol Tabanan",
       "waktu": "18.00 WITA s/d selesai"
     },
     {
       "tanggal": "14 Desember 2024",
+      "hari": "Sabtu",
       "lokasi": "Pasar Senggol Tabanan",
       "waktu": "18.00 WITA s/d selesai"
     },
     {
       "tanggal": "21 Desember 2024",
+      "hari": "Sabtu",
       "lokasi": "Pasar Senggol Tabanan",
       "waktu": "18.00 WITA s/d selesai"
     }
@@ -181,318 +216,376 @@
   "polres_gianyar": [
     {
       "tanggal": "3 Desember 2024",
+      "hari": "Selasa",
       "lokasi": "Obyek Wisata Goa Gajah",
       "waktu": "18.00 WITA s/d selesai"
     },
     {
       "tanggal": "10 Desember 2024",
+      "hari": "Selasa",
       "lokasi": "Obyek Wisata Goa Gajah",
       "waktu": "18.00 WITA s/d selesai"
     },
     {
       "tanggal": "19 Desember 2024",
+      "hari": "Kamis",
       "lokasi": "Central Parkir Monkey Forest",
       "waktu": "08.00 WITA s/d selesai"
     },
     {
       "tanggal": "1 Desember 2024",
+      "hari": "Minggu",
       "lokasi": "GOR Kebo Iwa Gianyar",
       "waktu": "07.00 WITA s/d selesai"
     },
     {
       "tanggal": "8 Desember 2024",
+      "hari": "Minggu",
       "lokasi": "GOR Kebo Iwa Gianyar",
       "waktu": "07.00 WITA s/d selesai"
     },
     {
       "tanggal": "15 Desember 2024",
+      "hari": "Minggu",
       "lokasi": "GOR Kebo Iwa Gianyar",
       "waktu": "07.00 WITA s/d selesai"
     },
     {
       "tanggal": "22 Desember 2024",
+      "hari": "Minggu",
       "lokasi": "GOR Kebo Iwa Gianyar",
       "waktu": "07.00 WITA s/d selesai"
     }
   ],
-
-  "polres_klungkung":[
-    
+  "polres_klungkung": [
     {
-        "tanggal": "1 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
+      "tanggal": "1 Desember 2024",
+      "hari": "Minggu",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
     },
     {
-        "tanggal": "2 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
+      "tanggal": "2 Desember 2024",
+      "hari": "Senin",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
     },
     {
-        "tanggal": "3 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
+      "tanggal": "3 Desember 2024",
+      "hari": "Selasa",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
     },
     {
-        "tanggal": "4 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
+      "tanggal": "4 Desember 2024",
+      "hari": "Rabu",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
     },
     {
-        "tanggal": "5 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
+      "tanggal": "5 Desember 2024",
+      "hari": "Kamis",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
     },
     {
-        "tanggal": "6 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
+      "tanggal": "6 Desember 2024",
+      "hari": "Jumat",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
     },
     {
-        "tanggal": "7 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
+      "tanggal": "7 Desember 2024",
+      "hari": "Sabtu",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
     },
     {
-        "tanggal": "9 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
+      "tanggal": "9 Desember 2024",
+      "hari": "Senin",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
     },
     {
-        "tanggal": "10 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "11 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "12 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "13 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "14 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "16 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "17 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "18 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "19 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "20 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "21 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "23 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "24 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "25 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "26 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "27 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "28 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "30 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    },
-    {
-        "tanggal": "31 Desember 2024",
-        "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
-        "waktu": "08.00 WITA s/d SELESAI"
-    }
-  ],
-  "polres_buleleng": [
-    {
-    "tanggal": "4 Desember 2024",
-    "lokasi": "Desa Busungbiu, Kec Busungbiu",
-    "waktu": "08.00 WITA s/d selesai"
+      "tanggal": "10 Desember 2024",
+      "hari": "Selasa",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
     },
     {
       "tanggal": "11 Desember 2024",
+      "hari": "Rabu",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "12 Desember 2024",
+      "hari": "Kamis",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "13 Desember 2024",
+      "hari": "Jumat",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "14 Desember 2024",
+      "hari": "Sabtu",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "16 Desember 2024",
+      "hari": "Senin",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "17 Desember 2024",
+      "hari": "Selasa",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "18 Desember 2024",
+      "hari": "Rabu",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "19 Desember 2024",
+      "hari": "Kamis",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "20 Desember 2024",
+      "hari": "Jumat",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "21 Desember 2024",
+      "hari": "Sabtu",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "23 Desember 2024",
+      "hari": "Senin",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "24 Desember 2024",
+      "hari": "Selasa",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "25 Desember 2024",
+      "hari": "Rabu",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "26 Desember 2024",
+      "hari": "Kamis",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "27 Desember 2024",
+      "hari": "Jumat",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "28 Desember 2024",
+      "hari": "Sabtu",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "30 Desember 2024",
+      "hari": "Senin",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    },
+    {
+      "tanggal": "31 Desember 2024",
+      "hari": "Selasa",
+      "lokasi": "Pusat Kesehatan Masyarakat Klungkung",
+      "waktu": "08.00 WITA s/d SELESAI"
+    }
+  ],
+  
+  "polres_buleleng": [
+    {
+      "tanggal": "4 Desember 2024",
+      "hari": "Rabu",
+      "lokasi": "Desa Busungbiu, Kec Busungbiu",
+      "waktu": "08.00 WITA s/d selesai"
+    },
+    {
+      "tanggal": "11 Desember 2024",
+      "hari": "Rabu",
       "lokasi": "Desa Pancasari, Kec Sukasada",
       "waktu": "08.00 WITA s/d selesai"
     },
     {
       "tanggal": "16 Desember 2024",
+      "hari": "Senin",
       "lokasi": "Desa Patas, Kec Gerokgak",
       "waktu": "08.00 WITA s/d selesai"
     },
     {
       "tanggal": "19 Desember 2024",
+      "hari": "Kamis",
       "lokasi": "Parkiran Krisna, Kec Banjar",
       "waktu": "08.00 WITA s/d selesai"
     }
   ],
-  
-  "polres_bangli":[
+
+  "polres_bangli": [
     {
-    "tanggal": "3 Desember 2024",
-    "lokasi": "Pasar Kayuambua",
-    "waktu": "09.00 WITA s/d SELESAI"
+      "tanggal": "3 Desember 2024",
+      "lokasi": "Pasar Kayuambua",
+      "waktu": "09.00 WITA s/d SELESAI",
+      "hari": "Senin"
     },
     {
-    "tanggal": "24 Desember 2024",
-    "lokasi": "Pasar Kayuambua",
-    "waktu": "09.00 WITA s/d SELESAI"
+      "tanggal": "24 Desember 2024",
+      "lokasi": "Pasar Kayuambua",
+      "waktu": "09.00 WITA s/d SELESAI",
+      "hari": "Selasa"
     },
     {
       "tanggal": "11 Desember 2024",
       "lokasi": "Pasar Kintamani",
-      "waktu": "09.00 WITA s/d selesai"
+      "waktu": "09.00 WITA s/d selesai",
+      "hari": "Rabu"
     },
     {
       "tanggal": "28 Desember 2024",
       "lokasi": "Pasar Kintamani",
-      "waktu": "09.00 WITA s/d selesai"
+      "waktu": "09.00 WITA s/d selesai",
+      "hari": "Sabtu"
     },
     {
       "tanggal": "5 Desember 2024",
       "lokasi": "Pasar Metro",
-      "waktu": "09.00 WITA s/d 14.00 WITA"
+      "waktu": "09.00 WITA s/d 14.00 WITA",
+      "hari": "Kamis"
     },
     {
       "tanggal": "26 Desember 2024",
       "lokasi": "Pasar Metro",
-      "waktu": "09.00 WITA s/d 14.00 WITA"
+      "waktu": "09.00 WITA s/d 14.00 WITA",
+      "hari": "Kamis"
     }
   ],
-  "polres_karangasem":
-  [
+  "polres_karangasem": [
     {
       "tanggal": "3 Desember 2024",
       "lokasi": "Pasar Pesanggaran Selat",
-      "waktu": "11.00 WITA s/d selesai"
+      "waktu": "11.00 WITA s/d selesai",
+      "hari": "Senin"
     },
     {
       "tanggal": "6 Desember 2024",
       "lokasi": "Polsek Kubu",
-      "waktu": "11.00 WITA s/d selesai"
+      "waktu": "11.00 WITA s/d selesai",
+      "hari": "Kamis"
     },
     {
       "tanggal": "10 Desember 2024",
       "lokasi": "Polsek Rendang",
-      "waktu": "11.00 WITA s/d selesai"
+      "waktu": "11.00 WITA s/d selesai",
+      "hari": "Selasa"
     },
     {
       "tanggal": "13 Desember 2024",
       "lokasi": "Kantor Camat Manggis",
-      "waktu": "11.00 WITA s/d selesai"
+      "waktu": "11.00 WITA s/d selesai",
+      "hari": "Jumat"
     },
     {
       "tanggal": "17 Desember 2024",
       "lokasi": "Terminal Bebandem",
-      "waktu": "11.00 WITA s/d selesai"
+      "waktu": "11.00 WITA s/d selesai",
+      "hari": "Selasa"
     },
     {
       "tanggal": "20 Desember 2024",
       "lokasi": "Polsek Abang",
-      "waktu": "11.00 WITA s/d selesai"
+      "waktu": "11.00 WITA s/d selesai",
+      "hari": "Jumat"
     },
     {
       "tanggal": "24 Desember 2024",
       "lokasi": "Pasar Sinduwati Sidemen",
-      "waktu": "11.00 WITA s/d selesai"
+      "waktu": "11.00 WITA s/d selesai",
+      "hari": "Selasa"
     },
     {
       "tanggal": "27 Desember 2024",
       "lokasi": "Taman Cinta Candidasa",
-      "waktu": "11.00 WITA s/d selesai"
+      "waktu": "11.00 WITA s/d selesai",
+      "hari": "Jumat"
     }
   ],
-  "polres_jembrana":
-  [
+  "polres_jembrana": [
     {
       "tanggal": "3 Desember 2024",
       "lokasi": "Pasar Senggol Pekutatan",
-      "waktu": "08.00 WITA s/d selesai"
+      "waktu": "08.00 WITA s/d selesai",
+      "hari": "Senin"
     },
     {
       "tanggal": "6 Desember 2024",
       "lokasi": "Pasar Melaya",
-      "waktu": "08.00 WITA s/d selesai"
+      "waktu": "08.00 WITA s/d selesai",
+      "hari": "Kamis"
     },
     {
       "tanggal": "10 Desember 2024",
       "lokasi": "TRI Pengambengan",
-      "waktu": "08.00 WITA s/d selesai"
+      "waktu": "08.00 WITA s/d selesai",
+      "hari": "Selasa"
     },
     {
       "tanggal": "14 Desember 2024",
       "lokasi": "Pasar Senggol Yehembang",
-      "waktu": "08.00 WITA s/d selesai"
+      "waktu": "08.00 WITA s/d selesai",
+      "hari": "Sabtu"
     },
     {
       "tanggal": "17 Desember 2024",
       "lokasi": "Pasar Senggol Pekutatan",
-      "waktu": "08.00 WITA s/d selesai"
+      "waktu": "08.00 WITA s/d selesai",
+      "hari": "Selasa"
     },
     {
       "tanggal": "20 Desember 2024",
       "lokasi": "Water Bee Gilimanuk",
-      "waktu": "08.00 WITA s/d selesai"
+      "waktu": "08.00 WITA s/d selesai",
+      "hari": "Jumat"
     },
     {
       "tanggal": "24 Desember 2024",
       "lokasi": "TRI Pengambengan",
-      "waktu": "08.00 WITA s/d selesai"
+      "waktu": "08.00 WITA s/d selesai",
+      "hari": "Selasa"
     },
     {
       "tanggal": "27 Desember 2024",
       "lokasi": "Lapangan Pergung",
-      "waktu": "08.00 WITA s/d selesai"
+      "waktu": "08.00 WITA s/d selesai",
+      "hari": "Jumat"
     }
   ]
+
 }
