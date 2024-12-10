@@ -45,7 +45,6 @@ interface IMedia {
 
 export default function Page() {
   const [url, setUrl] = useState("");
-  const [embed, setEmbed] = useState("");
   const [caption, setCaption] = useState("");
   const [originalCaption, setOriginalCaption] = useState("");
   const [owner, setOwner] = useState("");
@@ -213,7 +212,6 @@ export default function Page() {
         title: `Download Thumbnail`,
       });
 
-      setEmbed(`https://www.instagram.com/p/${shortcode}/embed`);
       setOriginalCaption(data.caption.text);
       setOwner(data.user.username);
       setMedia(links);
@@ -324,15 +322,13 @@ export default function Page() {
                     </InputRightElement>
                   </InputGroup>
                   <Button type="submit" leftIcon={<FaDownload />} colorScheme="teal" size="sm" mt={4} width="100%">
-                    DOWNLOAD
+                    GET DATA
                   </Button>
                 </FormControl>
               </form>
               {media.length > 0 && (
                 <Box mt={4} p={4} display={{ md: "flex" }}>
-                  <Box flexShrink={0} mb={6}>
-                    <iframe src={embed} height={450} />
-                  </Box>
+
 
                   <VStack ml={{ md: 4 }}>
                     {media.map((item, index) => (
