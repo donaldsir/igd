@@ -121,12 +121,21 @@ export default function Page() {
 
       if (data.carousel_media === undefined) {
         if (data.is_video) {
-          setVideoURL(`${data.video_versions[0].url}&dl=1`);
+          if (data.video_duration <= 60) {
+            setVideoURL(`${data.video_versions[0].url}&dl=1`);
+          } else {
+            setVideoURL(`${data.video_versions[1].url}&dl=1`);
+          }
+
         }
       } else {
         for (const dt of data.carousel_media) {
           if (dt.is_video) {
-            setVideoURL(`${dt.video_versions[0].url}&dl=1`);
+            if (dt.video_duration <= 60) {
+              setVideoURL(`${dt.video_versions[0].url}&dl=1`);
+            } else {
+              setVideoURL(`${dt.video_versions[1].url}&dl=1`);
+            }
           }
         }
       }
