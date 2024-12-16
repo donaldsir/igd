@@ -46,7 +46,16 @@ export default function Page() {
               SIM KELILING
             </Button>
           </SimpleGrid>
-
+          <SimpleGrid columns={2} spacing={2} mt={2}>
+            <Button
+              colorScheme="teal"
+              onClick={() => {
+                router.push(`/watermark`);
+              }}
+            >
+              WATERMARK VIDEO
+            </Button>
+          </SimpleGrid>
         </Box>
       </VStack>
     </Center>

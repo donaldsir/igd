@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   FormControl,
   Input,
@@ -27,6 +27,8 @@ import { useRouter } from "next/navigation";
 import * as htmlToImage from "html-to-image";
 import { capitalizeWords } from "../config";
 import { Roboto } from "next/font/google";
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { fetchFile } from "@ffmpeg/util";
 
 const roboto = Roboto({
   weight: "700",
@@ -40,37 +42,79 @@ export default function Page() {
   const [gambar, setGambar] = useState("");
   const [title, setTitle] = useState(``);
   const [isVideo, setIsVideo] = useState(false)
+  const [videoFile, setVideoFile] = useState<File>();
+  const [ffmpeg, setFfmpeg] = useState<FFmpeg | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
+
+  useEffect(() => {
+    const loadFFmpeg = async () => {
+      const ffmpegInstance = new FFmpeg(); // Menggunakan `FFmpeg` langsung
+      await ffmpegInstance.load();
+      setFfmpeg(ffmpegInstance);
+    };
+
+    loadFFmpeg();
+  }, []);
+
   const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
-    const selectedFiles = files as FileList;
+    const target = e.target; // Ambil target dari event
 
-    if (selectedFiles) {
-      toast({
-        title: "Please wait",
-        description: "Preparing thumbnail...",
-        status: "loading",
-        duration: null,
-      });
+    toast({
+      title: "Please wait",
+      description: "Rendering video...",
+      status: "loading",
+      duration: null,
+    });
 
-      const fileType = selectedFiles[0]["type"];
-      const imageTypes = ["image/gif", "image/jpeg", "image/png", "image/jpeg", , "image/webp"];
 
-      if (imageTypes.includes(fileType)) {
-        const blob = new Blob([selectedFiles[0]]);
-        const imgsrc = URL.createObjectURL(blob);
-        setIsVideo(false)
-        setGambar(imgsrc);
-      } else {
-        if (videoRef.current) {
-          const videoSrc = URL.createObjectURL(new Blob([selectedFiles[0]], { type: "video/mp4" }));
-          videoRef.current.src = videoSrc;
-          setIsVideo(true)
-          setGambar("")
+    // Cek jika target atau target.files null
+    if (!target || !target.files || target.files.length === 0) {
+      console.error("Harap unggah file video terlebih dahulu.");
+      return;
+    }
+
+    const fileInput = target.files[0]; // Ambil file video pertama yang diunggah
+
+    try {
+      // Load FFmpeg jika belum dimuat
+      if (ffmpeg) {
+
+        // Tulis file input dan watermark ke sistem virtual
+        await ffmpeg.writeFile("input.mp4", await fetchFile(fileInput));
+        await ffmpeg.writeFile("watermark.png", await fetchFile("/images/logo-pd-64.png"));
+
+        // Tambahkan watermark ke video
+        await ffmpeg.exec([
+          '-i', 'input.mp4',
+          '-i', 'watermark.png',
+          '-filter_complex', 'overlay=(W-w)/2:50',
+          '-codec:a', 'copy',
+          "-preset", "ultrafast",
+          '-crf', '30',
+          'output.mp4'
+        ]);
+
+        // Baca file hasil dan tampilkan
+        const data = await ffmpeg.readFile('output.mp4');
+        const videoUrl = URL.createObjectURL(new Blob([data], { type: 'video/mp4' }));
+        const elVideo = document.getElementById('outputVideo') as HTMLVideoElement
+
+        if (elVideo) {
+          elVideo.src = videoUrl
+          console.log(videoUrl);
+        } else {
+          console.log("Video gagal diproses!");
         }
+
+
+        console.log("Video berhasil diproses!");
+        toast.closeAll();
       }
 
+
+    } catch (error) {
+      console.error("Kesalahan saat memproses video:", error);
       toast.closeAll();
     }
   };
@@ -92,16 +136,6 @@ export default function Page() {
     setGambar(canvasElement.toDataURL("image/png"));
   }
 
-  const play = async () => {
-    const videoElement = document.getElementById("video") as HTMLVideoElement;
-    await videoElement.play();
-  }
-
-  const pause = () => {
-    const videoElement = document.getElementById("video") as HTMLVideoElement;
-    videoElement.pause();
-  }
-
   const createFileName = () => {
     // Generate a random string
     const randomString = Math.random().toString(36).substring(2, 10);
@@ -114,6 +148,71 @@ export default function Page() {
 
     return fileName;
   };
+
+  function getVideoResolution(url: string): Promise<{ width: number; height: number }> {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement("video");
+      video.src = url;
+
+      // Tunggu sampai metadata video (termasuk resolusi) tersedia
+      video.onloadedmetadata = () => {
+        resolve({ width: video.videoWidth, height: video.videoHeight });
+      };
+
+      video.onerror = (error) => {
+        reject("Gagal memuat video: " + error);
+      };
+    });
+  }
+
+  const render = async () => {
+    toast({
+      title: "Please wait",
+      description: "Preparing thumbnail...",
+      status: "loading",
+      duration: null,
+    });
+
+    const videoRes = {
+      width: 0,
+      height: 0,
+    };
+
+    // const videoUrl = URL.createObjectURL(new Blob([videoFile.buffer], { type: 'video/mp4' }));
+
+    // getVideoResolution(videoFile)
+    //   .then(({ width, height }) => {
+    //     videoRes.width = width;
+    //     videoRes.height = height;
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+
+    if (ffmpeg) {
+      await ffmpeg.load();
+      await ffmpeg.writeFile("input.mp4", await fetchFile(videoFile));
+      await ffmpeg.writeFile("watermark.png", await fetchFile("/images/logo-pd-64.png"));
+
+      await ffmpeg.exec([
+        '-i', 'input.mp4',        // Input video
+        '-i', 'watermark.png',    // Input watermark
+        '-filter_complex', 'overlay=(W-w)/2:80', // Filter overlay (posisi watermark: x=10, y=10)
+        '-codec:a', 'copy',       // Salin audio tanpa encoding ulang
+        "-preset", "ultrafast",
+        '-crf', '30',
+        'output.mp4'              // Output video
+      ]);
+
+      const dataFF = await ffmpeg.readFile("output.mp4");
+
+      if (videoRef.current) {
+        videoRef.current.src = URL.createObjectURL(new Blob([dataFF], { type: "video/mp4" }));
+        toast.closeAll();
+      }
+    }
+
+  }
 
   const download = (elementId: string, filename: string) => {
     const element = document.getElementById(elementId);
@@ -177,31 +276,15 @@ export default function Page() {
               <Button onClick={() => setTitle(capitalizeWords(title))} colorScheme="teal" size="sm" mt={4} ml={1}>
                 Capitalize
               </Button>
-
-
+              <Button onClick={render} colorScheme="teal" size="sm" mt={4} ml={1}>
+                Render
+              </Button>
             </CardBody>
             <CardFooter>
-              <VStack>
-                <video
-                  id="video"
-                  ref={videoRef}
-                  controls
-                  style={{ display: isVideo ? "" : "none", marginTop: 10 }}
-                />
-                <canvas
-                  style={{
-                    display: "none",
-                  }}
-                  id="canvasElement"
-                ></canvas>
 
+              <VStack>
+                <video id="outputVideo" controls style={{ maxWidth: '100%' }}></video>
                 <SimpleGrid columns={3} >
-                  <Button style={{ display: isVideo ? "" : "none" }} onClick={play} colorScheme="teal" size="sm" mt={4} ml={1}>
-                    Play
-                  </Button>
-                  <Button style={{ display: isVideo ? "" : "none" }} onClick={pause} colorScheme="teal" size="sm" mt={4} ml={1}>
-                    Pause
-                  </Button>
                   <Button style={{ display: isVideo ? "" : "none" }} onClick={screenShotVideo} colorScheme="teal" size="sm" mt={4} ml={1}>
                     Screenshot
                   </Button>
@@ -209,25 +292,7 @@ export default function Page() {
               </VStack>
             </CardFooter>
           </Card>
-          <Center id="canvas" style={{ position: "relative", width: 380, height: 475 }}>
-            <Image src="/images/logo-pd.png" w={100} style={{ position: "absolute", top: 10 }} alt="logo white" />
-            <Image src={gambar ? gambar : "/images/no-image.jpg"} w={380} h={475} fit="cover" alt="media" />
-            {title !== "" && (
-              <Container
-                style={{ position: "absolute", bottom: 40, boxShadow: "7px 7px #148b9d" }}
-                bg="rgba(255,255,255,0.9)"
-                w="85%"
-                p={2}
-              >
-                <Text fontSize={24} lineHeight={1.1} px={1} className={roboto.className} textAlign="center">
-                  {title}
-                </Text>
-              </Container>
-            )}
-          </Center>
-          <Button onClick={() => download("canvas", createFileName())} colorScheme="teal" size="sm" width='100%'>
-            Download Result
-          </Button>
+
         </SimpleGrid>
       </Box>
     </VStack>
