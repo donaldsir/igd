@@ -43,8 +43,7 @@ export async function POST(req: NextRequest) {
 
         // return NextResponse.json({ success: true, message: title.name }, { status: 200 });
 
-        if (title.name) {
-
+        if (title) {
             const titleBuffer = Buffer.from(await title.arrayBuffer());
 
             // Upload title
