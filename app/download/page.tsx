@@ -31,7 +31,7 @@ import { FaPaste, FaDownload, FaArrowLeft, FaPlay, FaPause, FaCamera } from "rea
 import { useRouter } from "next/navigation";
 import * as htmlToImage from "html-to-image";
 import { Roboto } from "next/font/google";
-import { hashtag } from "../config";
+import { hashtag, getInstagramShortcode } from "../config";
 
 const roboto = Roboto({
   weight: "700",
@@ -76,16 +76,6 @@ export default function Page() {
     },
     [toast]
   );
-
-  const getInstagramShortcode = () => {
-    const regex = /(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:p|reel)\/([A-Za-z0-9-_]+)/;
-    const match = url.match(regex);
-    if (match && match[1]) {
-      return match[1];
-    } else {
-      return null; // Return null if no shortcode is found
-    }
-  };
 
   const onRepostChange = (e: ChangeEvent<HTMLInputElement>) => {
     setRepost(e.target.checked);
@@ -167,7 +157,7 @@ export default function Page() {
       duration: null,
     });
 
-    const shortcode = getInstagramShortcode();
+    const shortcode = getInstagramShortcode(url);
     const apiRapid = `https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${shortcode}&include_insights=true`;
 
     try {

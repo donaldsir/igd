@@ -30,7 +30,7 @@ import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile } from "@ffmpeg/util";
 import { useRouter } from "next/navigation";
 import { Icon, useToast } from "@chakra-ui/react";
-import { getInstagramShortcode, hashtag } from "../config";
+import { getInstagramShortcode, hashtag, getVideoResolution } from "../config";
 import { Roboto } from "next/font/google";
 import * as htmlToImage from "html-to-image";
 
@@ -49,6 +49,7 @@ export default function Page() {
   const [owner, setOwner] = useState("");
   const [title, setTitle] = useState(``);
   const [fbid, setFbid] = useState("");
+  const [videoWidth, setVideoWidth] = useState(0)
   const [ffmpeg, setFfmpeg] = useState<FFmpeg | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -119,12 +120,15 @@ export default function Page() {
       const res = await response.json();
       const data = res.data;
 
+      let urlVideo = "";
       if (data.carousel_media === undefined) {
         if (data.is_video) {
           if (data.video_duration <= 60) {
             setVideoURL(`${data.video_versions[0].url}&dl=1`);
+            urlVideo = `${data.video_versions[0].url}&dl=1`
           } else {
             setVideoURL(`${data.video_versions[1].url}&dl=1`);
+            urlVideo = `${data.video_versions[1].url}&dl=1`
           }
 
         }
@@ -133,8 +137,10 @@ export default function Page() {
           if (dt.is_video) {
             if (dt.video_duration <= 60) {
               setVideoURL(`${dt.video_versions[0].url}&dl=1`);
+              urlVideo = `${dt.video_versions[0].url}&dl=1`
             } else {
               setVideoURL(`${dt.video_versions[1].url}&dl=1`);
+              urlVideo = `${dt.video_versions[1].url}&dl=1`
             }
           }
         }
@@ -143,6 +149,16 @@ export default function Page() {
       setOriginalCaption(data.caption.text);
       setOwner(data.user.username);
       setFbid(data.fbid);
+
+      //const objectURL = URL.createObjectURL(new Blob([urlVideo], { type: 'video/mp4' }));
+
+      getVideoResolution(urlVideo)
+        .then(({ width }) => {
+          setVideoWidth(width)
+        })
+        .catch((error) => {
+          console.error(error);
+        });
 
       if (repost) {
         setCaption(`${data.caption.text}\n\nRepost : @${data.user.username}\n\n${hashtag.join(" ")}`);
@@ -176,58 +192,9 @@ export default function Page() {
     setTitle(text);
   };
 
-  function getVideoResolution(url: string): Promise<{ width: number; height: number }> {
-    return new Promise((resolve, reject) => {
-      const video = document.createElement("video");
-      video.src = url;
-
-      // Tunggu sampai metadata video (termasuk resolusi) tersedia
-      video.onloadedmetadata = () => {
-        resolve({ width: video.videoWidth, height: video.videoHeight });
-      };
-
-      video.onerror = (error) => {
-        reject("Gagal memuat video: " + error);
-      };
-    });
-  }
-
   const render = async () => {
-    const element = document.getElementById("canvas");
-
-    if (!element) {
-      showToast("Error", 1, `Element with id "canvas" not found.`);
-      return;
-    }
-
-    const videoRes = {
-      width: 0,
-      height: 0,
-    };
-
-    getVideoResolution(videoURL)
-      .then(({ width, height }) => {
-        videoRes.width = width;
-        videoRes.height = height;
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    const dataUrl = await htmlToImage.toPng(element, {
-      style: {
-        border: "none", // Hapus border jika ada
-        margin: "0", // Hapus margin jika ada
-      },
-    });
-
     if (videoURL === "") {
       showToast("Error", 1, "Video not found");
-      return;
-    }
-
-    if (dataUrl === "") {
-      showToast("Error", 1, "Image not found");
       return;
     }
 
@@ -240,20 +207,47 @@ export default function Page() {
 
     if (ffmpeg) {
       await ffmpeg.load();
-
       await ffmpeg.writeFile("input.mp4", await fetchFile(videoURL));
-      await ffmpeg.writeFile("title.png", await fetchFile(dataUrl));
-      await ffmpeg.writeFile("watermark.png", await fetchFile("/images/logo-pd-watermark.png"));
+      await ffmpeg.writeFile("watermark.png", await fetchFile("/images/logo-pd-64.png"));
 
-      await ffmpeg.exec([
-        "-i", "input.mp4",
-        "-i", "title.png",
-        "-i", "watermark.png",
-        "-filter_complex",
-        `[1:v]scale=${videoRes.width}:-1[img1]; [2:v]scale=${videoRes.width}*0.3:-1[img2]; [0:v][img1]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2:enable='lt(t,3)'[tmp]; [tmp][img2]overlay=(main_w-overlay_w)/2:80`,
-        "-preset", "superfast",
-        "output.mp4",
-      ]);
+      const element = document.getElementById("canvas");
+      if (element) {
+        const dataUrl = await htmlToImage.toPng(element, {
+          style: {
+            border: "none", // Hapus border jika ada
+            margin: "0", // Hapus margin jika ada
+          },
+        });
+
+
+        if (dataUrl === "") {
+          showToast("Error", 1, "Image not found");
+          return;
+        }
+
+        await ffmpeg.writeFile("title.png", await fetchFile(dataUrl));
+        await ffmpeg.exec([
+          "-i", "input.mp4",
+          "-i", "title.png",
+          "-i", "watermark.png",
+          "-filter_complex",
+          `[1:v]scale=${videoWidth}:-1[title]; [0:v][title]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2[watermark]; [watermark]overlay=(W-w)/2:60`,
+          "-preset", "ultrafast",
+          '-crf', '30',
+          "output.mp4",
+        ]);
+      } else {
+        await ffmpeg.exec([
+          '-i', 'input.mp4',        // Input video
+          '-i', 'watermark.png',    // Input watermark
+          '-filter_complex', 'overlay=(W-w)/2:80', // Filter overlay (posisi watermark: x=10, y=10)
+          '-codec:a', 'copy',       // Salin audio tanpa encoding ulang
+          "-preset", "ultrafast",
+          '-crf', '30',
+          'output.mp4'              // Output video
+        ]);
+      }
+
 
       const dataFF = await ffmpeg.readFile("output.mp4");
 
