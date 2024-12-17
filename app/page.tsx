@@ -55,6 +55,14 @@ export default function Page() {
             >
               WATERMARK VIDEO
             </Button>
+            <Button
+              colorScheme="teal"
+              onClick={() => {
+                router.push(`/cloudinary`);
+              }}
+            >
+              CLOUDINARY
+            </Button>
           </SimpleGrid>
         </Box>
       </VStack>

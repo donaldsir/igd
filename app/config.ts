@@ -90,3 +90,16 @@ export function dateMySql(date: Date) {
     return `${arrDt[2]}-${arrDt[1]}-${arrDt[0]}`
 }
 
+export const createFileName = () => {
+    // Generate a random string
+    const randomString = Math.random().toString(36).substring(2, 10);
+
+    // Get the current timestamp
+    const timestamp = Date.now();
+
+    // Construct the file name using the random string, timestamp, and extension
+    const fileName = `pd_${randomString}_${timestamp}`;
+
+    return fileName;
+};
+

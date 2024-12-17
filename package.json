@@ -17,18 +17,21 @@
     "@ffmpeg/ffmpeg": "^0.12.10",
     "@ffmpeg/util": "^0.12.1",
     "btch-downloader": "^2.3.2",
+    "cloudinary": "^2.5.1",
     "framer-motion": "^11.11.8",
     "html-to-image": "^1.11.11",
     "instagram-url-direct": "^1.0.20",
     "next": "14.2.15",
     "react": "^18",
     "react-dom": "^18",
-    "react-icons": "^5.3.0"
+    "react-icons": "^5.3.0",
+    "streamifier": "^0.1.1"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/streamifier": "^0.1.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "typescript": "^5"
