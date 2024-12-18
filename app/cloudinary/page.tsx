@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, ChangeEvent, FormEvent } from "react";
+import { useState, useCallback, ChangeEvent, FormEvent, useRef } from "react";
 import {
     FormControl,
     Input,
@@ -59,6 +59,7 @@ export default function Page() {
     const [videoFile, setVideoFile] = useState<File>();
     const [videoUrl, setVideoUrl] = useState('')
     const [publicIdVideo, setPublicIdVideo] = useState('')
+    const videoRef = useRef<HTMLVideoElement | null>(null);
 
     const showToast = useCallback(
         async (title: string, iStatus: number, message: string) => {
@@ -261,9 +262,8 @@ export default function Page() {
             if (data.success) {
                 setVideoUrl(data.url)
 
-                const elVideo = document.getElementById('outputVideo') as HTMLVideoElement
-                if (elVideo) {
-                    elVideo.src = data.url
+                if (videoRef.current) {
+                    videoRef.current.src = data.url;
                 }
 
                 toast.closeAll();
@@ -468,7 +468,14 @@ export default function Page() {
                             <Button onClick={render} colorScheme="teal" size="sm" mt={4} ml={1}>
                                 Render
                             </Button>
-                            <video id="outputVideo" controls style={{ maxWidth: '100%', marginTop: 20 }} ></video>
+                            <video
+                                style={{
+                                    width: "100%",
+                                    marginTop: 20
+                                }}
+                                ref={videoRef}
+                                controls
+                            ></video>
                             <Button onClick={downloadVideo} colorScheme="teal" size="sm" mt={4} ml={1} disabled={videoUrl ? false : true}>
                                 Download
                             </Button>
