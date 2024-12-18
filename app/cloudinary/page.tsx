@@ -29,7 +29,7 @@ import { useToast, Icon } from "@chakra-ui/react";
 import { FaPaste, FaDownload, FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import * as htmlToImage from "html-to-image";
-import { capitalizeWords, createFileName, getVideoResolution, getInstagramShortcode, hashtag } from "../config";
+import { capitalizeWords, getVideoResolution, getInstagramShortcode, hashtag } from "../config";
 import { Roboto } from "next/font/google";
 
 const roboto = Roboto({
@@ -60,8 +60,6 @@ export default function Page() {
     const [videoUrl, setVideoUrl] = useState('')
     const [publicIdVideo, setPublicIdVideo] = useState('')
     const videoRef = useRef<HTMLVideoElement | null>(null);
-
-    const cloud_name = 'dh1sqyt2q'
 
     const showToast = useCallback(
         async (title: string, iStatus: number, message: string) => {
