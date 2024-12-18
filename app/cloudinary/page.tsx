@@ -284,28 +284,7 @@ export default function Page() {
 
     }
 
-    const downloadVideo = async () => {
-        toast({
-            title: "Please wait",
-            description: "Downloading video...",
-            status: "loading",
-            duration: null,
-        });
 
-
-        await fetch(videoUrl)
-            .then(response => response.blob())
-            .then(blob => {
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `${publicIdVideo}.mp4`;  // Nama file yang akan didownload
-                link.click();
-            })
-            .catch(error => console.error('Error downloading video:', error));
-
-        toast.closeAll()
-
-    }
 
 
     return (
@@ -439,9 +418,7 @@ export default function Page() {
                                 ref={videoRef}
                                 controls
                             ></video>
-                            <Button onClick={downloadVideo} colorScheme="teal" size="sm" mt={4} ml={1} disabled={videoUrl ? false : true}>
-                                Download
-                            </Button>
+
                         </CardBody>
 
                     </Card>
