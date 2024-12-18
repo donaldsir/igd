@@ -61,7 +61,7 @@ export default function Page() {
     const [publicIdVideo, setPublicIdVideo] = useState('')
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
-
+    const cloud_name = 'dh1sqyt2q'
 
     const showToast = useCallback(
         async (title: string, iStatus: number, message: string) => {
@@ -263,6 +263,7 @@ export default function Page() {
 
             if (data.success) {
                 setVideoUrl(data.url)
+                console.log(data.url)
 
                 if (videoRef.current) {
                     videoRef.current.src = data.url;
@@ -293,57 +294,17 @@ export default function Page() {
             duration: null,
         });
 
-        try {
-            // Fetch data dari URL
-            const response = await fetch(videoUrl);
 
-            if (!response.ok) {
-                throw new Error(`Failed to fetch video. Status: ${response.status}`);
-            }
+        fetch(videoUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `${publicIdVideo}.mp4`;  // Nama file yang akan didownload
+                link.click();
+            })
+            .catch(error => console.error('Error downloading video:', error));
 
-            // Konversi ke Blob (Binary Large Object)
-            const blob = await response.blob();
-
-            // Buat URL object dari Blob
-            const blobUrl = window.URL.createObjectURL(blob);
-
-            // Buat elemen <a> untuk trigger download
-            const a = document.createElement('a');
-            a.href = blobUrl;
-            a.download = `${createFileName()}.mp4`;
-
-            // Simulasikan klik untuk mendownload file
-            document.body.appendChild(a);
-            a.click();
-
-            // Hapus elemen setelah download selesai
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(blobUrl); // Bersihkan URL Blob
-
-            const fd = new FormData();
-            fd.append('public_id', publicIdVideo);
-
-            const res = await fetch(`/api/cloudinary/delete`, { method: 'POST', body: fd });
-            const data = await res.json();
-
-            if (data.success) {
-                toast.closeAll()
-                console.log('Video downloaded successfully!');
-            } else {
-                toast.closeAll()
-                console.log(data.error);
-                showToast("Error", 1, data.error)
-            }
-
-
-        } catch (error) {
-            if (typeof error === "string") {
-                console.error('Error downloading video:', error.toUpperCase());
-            } else if (error instanceof Error) {
-                console.error('Error downloading video:', error.message);
-
-            }
-        }
     }
 
 
