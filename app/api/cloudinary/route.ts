@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import streamifier from 'streamifier';
 
 cloudinary.v2.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name: 'dh1sqyt2q',
+    api_key: '317222246871665',
+    api_secret: 'MqEFGBYO6EnWBnkSTEpkHy9h8Sg',
 });
 
 export async function GET() {
