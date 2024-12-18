@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
         if (result.result === 'ok') {
             return NextResponse.json({ success: true, message: "File deleted" }, { status: 200 })
         } else {
-            return NextResponse.json({ success: false, error: 'Gagal menghapus file' }, { status: 500 });
+            return NextResponse.json({ success: false, error: 'Failed to delete video' }, { status: 500 });
         }
     } catch (error) {
         if (typeof error === "string") {
