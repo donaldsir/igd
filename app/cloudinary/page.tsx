@@ -408,7 +408,7 @@ export default function Page() {
                             </Button>
                             <video
                                 style={{
-                                    width: "100%",
+                                    height: "500px",
                                     marginTop: 20
                                 }}
                                 ref={videoRef}
