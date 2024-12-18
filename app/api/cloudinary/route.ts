@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
                 resource_type: 'video',
                 transformation: [
                     { overlay: 'watermark', gravity: 'north', y: 80 }, // Tambahkan watermark
-                    { overlay: 'title', width: videoWidth, gravity: 'south', y: 50 }, // Tambahkan title
+                    { overlay: 'title', width: videoWidth, gravity: 'south', y: 80 }, // Tambahkan title
                     { format: 'mp4' } // Atur format video menjadi MP4
                 ],
             });
