@@ -11,7 +11,6 @@ import {
     Card,
     CardHeader,
     CardBody,
-    CardFooter,
     Flex,
     Spacer,
     VStack,
@@ -43,6 +42,7 @@ interface IMedia {
     title: string;
 }
 
+
 export default function Page() {
     const router = useRouter();
     const toast = useToast();
@@ -58,6 +58,7 @@ export default function Page() {
     const [videoWidth, setVideoWidth] = useState(0)
     const [videoFile, setVideoFile] = useState<File>();
     const [videoUrl, setVideoUrl] = useState('')
+    const [publicIdVideo, setPublicIdVideo] = useState('')
 
     const showToast = useCallback(
         async (title: string, iStatus: number, message: string) => {
@@ -198,6 +199,30 @@ export default function Page() {
         }
     };
 
+    const uploadToCloudinary = async (file: File) => {
+        const signatureResponse = await fetch('/api/cloudinary/signature', { method: 'GET' });
+        const { signature, timestamp, api_key, cloud_name } = await signatureResponse.json();
+
+        const formData = new FormData();
+        formData.append('file', file); // File yang akan diunggah
+        formData.append('api_key', api_key); // API key Cloudinary
+        formData.append('timestamp', timestamp); // Timestamp
+        formData.append('signature', signature); // Signature dari backend
+
+        // Kirim permintaan unggahan ke Cloudinary
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/upload`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            showToast("Error", 1, "Upload failed")
+        }
+        return response.json();
+    }
+
+
+
     const render = async () => {
         toast({
             title: "Please wait",
@@ -206,44 +231,66 @@ export default function Page() {
             duration: null,
         });
 
-        const fd = new FormData();
-        fd.append('video', videoFile as File);
-        fd.append('videoWidth', videoWidth.toString());
+        try {
+            const result = await uploadToCloudinary(videoFile as File);
+            setPublicIdVideo(result.public_id)
 
-        const element = document.getElementById("canvas");
+            const fd = new FormData();
+            fd.append('public_id', result.public_id);
+            fd.append('secure_url', result.secure_url);
+            fd.append('videoWidth', videoWidth.toString());
 
-        if (element) {
-            const dataUrl = await htmlToImage.toPng(element, {
-                style: {
-                    border: "none", // Hapus border jika ada
-                    margin: "0", // Hapus margin jika ada
-                },
-            });
+            const element = document.getElementById("canvas");
 
-            const blob = new Blob([dataUrl], { type: 'image/png' });
-            fd.append('title', blob, 'image.png');
-        }
+            if (element) {
+                const dataUrl = await htmlToImage.toPng(element, {
+                    style: {
+                        border: "none", // Hapus border jika ada
+                        margin: "0", // Hapus margin jika ada
+                    },
+                });
 
-        const res = await fetch(`/api/cloudinary`, { method: 'POST', body: fd });
-        const data = await res.json();
+                const blob = new Blob([dataUrl], { type: 'image/png' });
+                fd.append('title', blob, 'image.png');
+            }
 
-        console.log(data)
-        if (data.success) {
-            setVideoUrl(data.url)
-            toast.closeAll();
-        } else {
-            toast.closeAll()
-            toast({
-                title: "Error",
-                description: data.error,
-                status: "error",
-                duration: null,
-            });
+            const res = await fetch(`/api/cloudinary`, { method: 'POST', body: fd });
+            const data = await res.json();
+
+
+            if (data.success) {
+                setVideoUrl(data.url)
+
+                const elVideo = document.getElementById('outputVideo') as HTMLVideoElement
+                if (elVideo) {
+                    elVideo.src = data.url
+                }
+
+                toast.closeAll();
+            } else {
+                toast.closeAll()
+                toast({
+                    title: "Error",
+                    description: data.error,
+                    status: "error",
+                    duration: null,
+                });
+            }
+
+        } catch (error) {
+            console.log(error)
         }
 
     }
 
     const downloadVideo = async () => {
+        toast({
+            title: "Please wait",
+            description: "Downloading video...",
+            status: "loading",
+            duration: null,
+        });
+
         try {
             // Fetch data dari URL
             const response = await fetch(videoUrl);
@@ -271,12 +318,28 @@ export default function Page() {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(blobUrl); // Bersihkan URL Blob
 
-            console.log('Video downloaded successfully!');
+            const fd = new FormData();
+            fd.append('public_id', publicIdVideo);
+
+            const res = await fetch(`/api/cloudinary/delete`, { method: 'POST', body: fd });
+            const data = await res.json();
+
+            if (data.success) {
+                toast.closeAll()
+                console.log('Video downloaded successfully!');
+            } else {
+                toast.closeAll()
+                console.log(data.error);
+                showToast("Error", 1, data.error)
+            }
+
+
         } catch (error) {
             if (typeof error === "string") {
                 console.error('Error downloading video:', error.toUpperCase());
             } else if (error instanceof Error) {
                 console.error('Error downloading video:', error.message);
+
             }
         }
     }
@@ -399,19 +462,18 @@ export default function Page() {
                                     </Container>
                                 </Center>
                             )}
-
-                        </CardBody>
-                        <CardFooter>
                             <Button onClick={() => setTitle(capitalizeWords(title))} colorScheme="teal" size="sm" mt={4} ml={1}>
                                 Capitalize
                             </Button>
                             <Button onClick={render} colorScheme="teal" size="sm" mt={4} ml={1}>
                                 Render
                             </Button>
+                            <video id="outputVideo" controls style={{ maxWidth: '100%', marginTop: 20 }} ></video>
                             <Button onClick={downloadVideo} colorScheme="teal" size="sm" mt={4} ml={1} disabled={videoUrl ? false : true}>
                                 Download
                             </Button>
-                        </CardFooter>
+                        </CardBody>
+
                     </Card>
                 </SimpleGrid>
             </Box>

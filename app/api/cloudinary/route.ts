@@ -1,6 +1,6 @@
-import cloudinary, { UploadApiResponse } from 'cloudinary';
+import cloudinary from 'cloudinary';
 import { NextRequest, NextResponse } from "next/server";
-import streamifier from 'streamifier';
+
 
 cloudinary.v2.config({
     cloud_name: 'dh1sqyt2q',
@@ -29,19 +29,9 @@ export async function GET() {
 export async function POST(req: NextRequest) {
     try {
         const fd = await req.formData();
-        const videoFile = fd.get('video');
         const title = fd.get('title') as File
         const videoWidth = parseInt(fd.get('videoWidth') as string)
-
-        if (!videoFile || !(videoFile instanceof File)) {
-            return NextResponse.json({ success: false, message: 'No video file uploaded' }, { status: 400 });
-        }
-
-        // Mengonversi video ke Buffer
-        const videoBuffer = Buffer.from(await videoFile.arrayBuffer());
-        const public_id_video = `video_${Date.now()}`
-
-        // return NextResponse.json({ success: true, message: title.name }, { status: 200 });
+        const public_id_video = fd.get('public_id') as string
 
         if (title) {
             const titleBuffer = Buffer.from(await title.arrayBuffer());
@@ -57,55 +47,30 @@ export async function POST(req: NextRequest) {
                 ).end(titleBuffer);
             });
 
-            // Upload video dan tambahkan watermark
-            const videoResult: UploadApiResponse = await new Promise((resolve, reject) => {
-                const cloudinaryUploadStream = cloudinary.v2.uploader.upload_stream(
-                    {
-                        resource_type: 'video',
-                        public_id: public_id_video,
-                        overwrite: true,
-                        transformation: [
-                            { overlay: 'watermark', gravity: 'north', y: 80 },
-                            { overlay: "title", width: videoWidth, gravity: 'south', y: 50 },
-                            { format: 'mp4' }
-                        ]
-                    },
-                    (error, result) => {
-                        if (error) reject(error);
-                        else resolve(result as UploadApiResponse);
-                    }
-                ).end(videoBuffer);
-
-                // Membaca stream dari video buffer dan mengunggah ke Cloudinary
-                streamifier.createReadStream(videoBuffer).pipe(cloudinaryUploadStream);
+            const videoResult = cloudinary.v2.url(public_id_video, {
+                resource_type: 'video',
+                transformation: [
+                    { overlay: 'watermark', gravity: 'north', y: 80 }, // Tambahkan watermark
+                    { overlay: 'title', width: videoWidth, gravity: 'south', y: 50 }, // Tambahkan title
+                    { format: 'mp4' } // Atur format video menjadi MP4
+                ],
             });
 
+
             // Respon dengan URL video yang sudah digabung
-            return NextResponse.json({ success: true, url: videoResult.secure_url, title: true }, { status: 200 })
+            return NextResponse.json({ success: true, url: videoResult, title: true }, { status: 200 })
         } else {
-            // Upload video dan tambahkan watermark
-            const videoResult: UploadApiResponse = await new Promise((resolve, reject) => {
-                const cloudinaryUploadStream = cloudinary.v2.uploader.upload_stream(
-                    {
-                        resource_type: 'video',
-                        public_id: public_id_video,
-                        overwrite: true,
-                        transformation: [
-                            { overlay: 'watermark', gravity: 'north', y: 80 },
-                            { format: 'mp4' }
-                        ]
-                    },
-                    (error, result) => {
-                        if (error) reject(error);
-                        else resolve(result as UploadApiResponse);
-                    }
-                ).end(videoBuffer);
-
-                // Membaca stream dari video buffer dan mengunggah ke Cloudinary
-                streamifier.createReadStream(videoBuffer).pipe(cloudinaryUploadStream);
+            const videoResult = cloudinary.v2.url(public_id_video, {
+                resource_type: 'video',
+                transformation: [
+                    { overlay: 'watermark', gravity: 'north', y: 80 }, // Tambahkan watermark
+                    { format: 'mp4' } // Atur format video menjadi MP4
+                ],
             });
+
+
             // Respon dengan URL video yang sudah digabung
-            return NextResponse.json({ success: true, url: videoResult.secure_url, title: false }, { status: 200 })
+            return NextResponse.json({ success: true, url: videoResult, title: false }, { status: 200 })
         }
 
     } catch (error) {
