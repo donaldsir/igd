@@ -57,8 +57,6 @@ export default function Page() {
     const [title, setTitle] = useState(``);
     const [videoWidth, setVideoWidth] = useState(0)
     const [videoFile, setVideoFile] = useState<File>();
-    const [videoUrl, setVideoUrl] = useState('')
-    const [publicIdVideo, setPublicIdVideo] = useState('')
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     const showToast = useCallback(
@@ -234,7 +232,6 @@ export default function Page() {
 
         try {
             const result = await uploadToCloudinary(videoFile as File);
-            setPublicIdVideo(result.public_id)
 
             const fd = new FormData();
             fd.append('public_id', result.public_id);
@@ -260,7 +257,6 @@ export default function Page() {
 
 
             if (data.success) {
-                setVideoUrl(data.url)
                 console.log(data.url)
 
                 if (videoRef.current) {
