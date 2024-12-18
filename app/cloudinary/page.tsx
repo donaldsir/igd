@@ -293,7 +293,7 @@ export default function Page() {
         });
 
 
-        fetch(videoUrl)
+        await fetch(videoUrl)
             .then(response => response.blob())
             .then(blob => {
                 const link = document.createElement('a');
@@ -302,6 +302,8 @@ export default function Page() {
                 link.click();
             })
             .catch(error => console.error('Error downloading video:', error));
+
+        toast.closeAll()
 
     }
 
