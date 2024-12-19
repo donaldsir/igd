@@ -97,7 +97,8 @@ export default function Page() {
 
         const element = document.getElementById("canvas");
         if (element) {
-          element.style.transform = 'scale(0.6)'
+
+          element.style.transform = 'scale(0.65)'
           const dataUrl = await htmlToImage.toPng(element, {});
 
           await ffmpeg.writeFile("title.png", await fetchFile(dataUrl));

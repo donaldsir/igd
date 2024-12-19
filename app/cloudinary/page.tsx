@@ -24,6 +24,7 @@ import {
     Center,
     Text,
     Container,
+    CardFooter,
 } from "@chakra-ui/react";
 import { useToast, Icon } from "@chakra-ui/react";
 import { FaPaste, FaDownload, FaArrowLeft } from "react-icons/fa";
@@ -47,6 +48,7 @@ export default function Page() {
     const router = useRouter();
     const toast = useToast();
     const xRapidApiKey = "d1b694d66amsh95321ca4e2c7b58p1b30eajsn93ea0bad3230";
+    const cloud_name = 'dh1sqyt2q'
 
     const [url, setUrl] = useState("");
     const [caption, setCaption] = useState("");
@@ -55,6 +57,7 @@ export default function Page() {
     const [media, setMedia] = useState<IMedia[]>([]);
     const [repost, setRepost] = useState(true);
     const [title, setTitle] = useState(``);
+    const [videoUrl, setVideoUrl] = useState('')
     const [videoWidth, setVideoWidth] = useState(0)
     const [videoFile, setVideoFile] = useState<File>();
     const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -198,29 +201,30 @@ export default function Page() {
         }
     };
 
-    const uploadToCloudinary = async (file: File) => {
-        const signatureResponse = await fetch('/api/cloudinary/signature', { method: 'GET' });
-        const { signature, timestamp, api_key, cloud_name } = await signatureResponse.json();
-
+    const uploadToCloudinary = async (file: File, public_id: string) => {
         const formData = new FormData();
         formData.append('file', file); // File yang akan diunggah
-        formData.append('api_key', api_key); // API key Cloudinary
-        formData.append('timestamp', timestamp); // Timestamp
-        formData.append('signature', signature); // Signature dari backend
+        formData.append('upload_preset', 'video-upload-preset');
+        formData.append('public_id', public_id);
 
-        // Kirim permintaan unggahan ke Cloudinary
-        const response = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/upload`, {
-            method: 'POST',
-            body: formData,
-        });
+        try {
+            // Kirim permintaan unggahan ke Cloudinary
+            const response = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`, {
+                method: 'POST',
+                body: formData,
+            });
 
-        if (!response.ok) {
-            showToast("Error", 1, "Upload failed")
+            const result = await response.json();
+
+            if (!response.ok) {
+                showToast("Error", 1, "Upload failed")
+                console.error('Upload failed:', result);
+            }
+
+        } catch (e) {
+            showToast("Error", 1, (e as Error).message)
         }
-        return response.json();
     }
-
-
 
     const render = async () => {
         toast({
@@ -231,11 +235,11 @@ export default function Page() {
         });
 
         try {
-            const result = await uploadToCloudinary(videoFile as File);
+            const public_id = `video_${Date.now()}`
+            uploadToCloudinary(videoFile as File, public_id);
 
             const fd = new FormData();
-            fd.append('public_id', result.public_id);
-            fd.append('secure_url', result.secure_url);
+            fd.append('public_id', public_id);
             fd.append('videoWidth', videoWidth.toString());
 
             const element = document.getElementById("canvas");
@@ -255,14 +259,10 @@ export default function Page() {
             const res = await fetch(`/api/cloudinary`, { method: 'POST', body: fd });
             const data = await res.json();
 
+            console.log(data)
 
             if (data.success) {
-                console.log(data.url)
-
-                if (videoRef.current) {
-                    videoRef.current.src = data.url;
-                }
-
+                setVideoUrl(data.url)
                 toast.closeAll();
             } else {
                 toast.closeAll()
@@ -280,7 +280,38 @@ export default function Page() {
 
     }
 
+    const download = async () => {
+        try {
+            const response = await fetch(videoUrl);
 
+            // Periksa apakah permintaan berhasil
+            if (!response.ok) {
+                showToast("Error", 1, `Gagal mendownload video: ${response.statusText}`)
+                return;
+            }
+
+            // Konversi respons menjadi Blob
+            const blob = await response.blob();
+
+            // Buat URL objek dari Blob
+            const url = window.URL.createObjectURL(blob);
+
+            // Buat elemen <a> untuk tautan unduhan
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'downloaded_video.mp4'; // Nama file hasil download
+            document.body.appendChild(a);
+            a.click();
+
+            // Bersihkan elemen <a> dan URL objek setelah unduhan
+            a.remove();
+            window.URL.revokeObjectURL(url);
+
+            console.log('Video berhasil didownload.');
+        } catch (e) {
+            showToast("Error", 1, (e as Error).message)
+        }
+    }
 
 
     return (
@@ -406,17 +437,12 @@ export default function Page() {
                             <Button onClick={render} colorScheme="teal" size="sm" mt={4} ml={1}>
                                 Render
                             </Button>
-                            <video
-                                style={{
-                                    height: "500px",
-                                    marginTop: 20
-                                }}
-                                ref={videoRef}
-                                controls
-                            ></video>
-
                         </CardBody>
-
+                        <CardFooter>
+                            <Button onClick={download} colorScheme="teal" size="sm">
+                                Download
+                            </Button>
+                        </CardFooter>
                     </Card>
                 </SimpleGrid>
             </Box>

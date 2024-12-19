@@ -1,7 +1,6 @@
 import cloudinary from 'cloudinary';
 import { NextRequest, NextResponse } from "next/server";
 
-
 cloudinary.v2.config({
     cloud_name: 'dh1sqyt2q',
     api_key: '317222246871665',
@@ -19,7 +18,6 @@ export async function GET() {
             bandwidth: usage.bandwidth.used_percent,
             requests: usage.requests,
         }, { status: 200 })
-
 
     } catch (error) {
         return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
@@ -56,9 +54,8 @@ export async function POST(req: NextRequest) {
                 ],
             });
 
-
             // Respon dengan URL video yang sudah digabung
-            return NextResponse.json({ success: true, url: videoResult, title: true }, { status: 200 })
+            return NextResponse.json({ success: true, url: videoResult, title: true, public_id: public_id_video }, { status: 200 })
         } else {
             const videoResult = cloudinary.v2.url(public_id_video, {
                 resource_type: 'video',
@@ -68,11 +65,9 @@ export async function POST(req: NextRequest) {
                 ],
             });
 
-
             // Respon dengan URL video yang sudah digabung
-            return NextResponse.json({ success: true, url: videoResult, title: false }, { status: 200 })
+            return NextResponse.json({ success: true, url: videoResult, title: false, public_id: public_id_video }, { status: 200 })
         }
-
     } catch (error) {
         return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
     }
