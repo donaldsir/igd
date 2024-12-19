@@ -25,7 +25,7 @@ import { useToast } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import * as htmlToImage from "html-to-image";
-import { capitalizeWords, getVideoResolution } from "../config";
+import { capitalizeWords } from "../config";
 import { Roboto } from "next/font/google";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile } from "@ffmpeg/util";
@@ -42,7 +42,6 @@ export default function Page() {
   const [title, setTitle] = useState(``);
   const [videoFile, setVideoFile] = useState<File>();
   const [videoSrc, setVideoSrc] = useState("");
-  const [videoWidth, setVideoWidth] = useState(0)
   const [ffmpeg, setFfmpeg] = useState<FFmpeg | null>(null);
 
   useEffect(() => {
@@ -64,16 +63,7 @@ export default function Page() {
       return;
     }
 
-    const videoUrl = URL.createObjectURL(new Blob([target.files[0]], { type: 'video/mp4' }));
     setVideoFile(target.files[0])
-
-    getVideoResolution(videoUrl)
-      .then(({ width }) => {
-        setVideoWidth(width)
-      })
-      .catch((error) => {
-        console.error(error);
-      });
   };
 
   const createFileName = () => {
@@ -107,12 +97,8 @@ export default function Page() {
 
         const element = document.getElementById("canvas");
         if (element) {
-          const dataUrl = await htmlToImage.toPng(element, {
-            style: {
-              border: "none", // Hapus border jika ada
-              margin: "0", // Hapus margin jika ada
-            },
-          });
+          element.style.transform = 'scale(0.6)'
+          const dataUrl = await htmlToImage.toPng(element, {});
 
           await ffmpeg.writeFile("title.png", await fetchFile(dataUrl));
           await ffmpeg.exec([
@@ -120,7 +106,7 @@ export default function Page() {
             "-i", "title.png",
             "-i", "watermark.png",
             "-filter_complex",
-            `[1:v]scale=${videoWidth}:-1[title]; [0:v][title]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2[watermark]; [watermark]overlay=(W-w)/2:60`,
+            `[1:v]trim=duration=3,setpts=PTS-STARTPTS[title]; [0:v][title]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2:enable='between(t,0,3)'[watermark]; [watermark]overlay=(W-w)/2:60`,
             "-preset", "ultrafast",
             '-crf', '30',
             "output.mp4",
@@ -131,7 +117,6 @@ export default function Page() {
             '-i', 'input.mp4',
             '-i', 'watermark.png',
             '-filter_complex', 'overlay=(W-w)/2:50',
-            '-codec:a', 'copy',
             "-preset", "ultrafast",
             '-crf', '30',
             'output.mp4'
@@ -214,14 +199,14 @@ export default function Page() {
           <Card>
             <CardBody>
               {title !== "" && (
-                <Center id="canvas" style={{ position: "relative", height: 180, }}>
+                <Center id="canvas" style={{ position: "relative", height: 80, }}>
                   <Container
                     style={{ position: "absolute", boxShadow: "7px 7px #148b9d" }}
                     bg="rgba(255,255,255,0.9)"
                     w="85%"
                     p={2}
                   >
-                    <Text fontSize={24} className={roboto.className} textAlign="center" lineHeight={1.1}>
+                    <Text fontSize={22} className={roboto.className} textAlign="center" lineHeight={1.1}>
                       {title}
                     </Text>
                   </Container>

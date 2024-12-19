@@ -30,7 +30,7 @@ import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile } from "@ffmpeg/util";
 import { useRouter } from "next/navigation";
 import { Icon, useToast } from "@chakra-ui/react";
-import { getInstagramShortcode, hashtag, getVideoResolution } from "../config";
+import { getInstagramShortcode, hashtag } from "../config";
 import { Roboto } from "next/font/google";
 import * as htmlToImage from "html-to-image";
 
@@ -49,7 +49,6 @@ export default function Page() {
   const [owner, setOwner] = useState("");
   const [title, setTitle] = useState(``);
   const [fbid, setFbid] = useState("");
-  const [videoWidth, setVideoWidth] = useState(0)
   const [ffmpeg, setFfmpeg] = useState<FFmpeg | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -120,15 +119,12 @@ export default function Page() {
       const res = await response.json();
       const data = res.data;
 
-      let urlVideo = "";
       if (data.carousel_media === undefined) {
         if (data.is_video) {
           if (data.video_duration <= 60) {
             setVideoURL(`${data.video_versions[0].url}&dl=1`);
-            urlVideo = `${data.video_versions[0].url}&dl=1`
           } else {
             setVideoURL(`${data.video_versions[1].url}&dl=1`);
-            urlVideo = `${data.video_versions[1].url}&dl=1`
           }
 
         }
@@ -137,10 +133,8 @@ export default function Page() {
           if (dt.is_video) {
             if (dt.video_duration <= 60) {
               setVideoURL(`${dt.video_versions[0].url}&dl=1`);
-              urlVideo = `${dt.video_versions[0].url}&dl=1`
             } else {
               setVideoURL(`${dt.video_versions[1].url}&dl=1`);
-              urlVideo = `${dt.video_versions[1].url}&dl=1`
             }
           }
         }
@@ -149,16 +143,6 @@ export default function Page() {
       setOriginalCaption(data.caption.text);
       setOwner(data.user.username);
       setFbid(data.fbid);
-
-      //const objectURL = URL.createObjectURL(new Blob([urlVideo], { type: 'video/mp4' }));
-
-      getVideoResolution(urlVideo)
-        .then(({ width }) => {
-          setVideoWidth(width)
-        })
-        .catch((error) => {
-          console.error(error);
-        });
 
       if (repost) {
         setCaption(`${data.caption.text}\n\nRepost : @${data.user.username}\n\n${hashtag.join(" ")}`);
@@ -212,18 +196,8 @@ export default function Page() {
 
       const element = document.getElementById("canvas");
       if (element) {
-        const dataUrl = await htmlToImage.toPng(element, {
-          style: {
-            border: "none", // Hapus border jika ada
-            margin: "0", // Hapus margin jika ada
-          },
-        });
-
-
-        if (dataUrl === "") {
-          showToast("Error", 1, "Image not found");
-          return;
-        }
+        element.style.transform = 'scale(0.6)'
+        const dataUrl = await htmlToImage.toPng(element, {});
 
         await ffmpeg.writeFile("title.png", await fetchFile(dataUrl));
         await ffmpeg.exec([
@@ -231,7 +205,7 @@ export default function Page() {
           "-i", "title.png",
           "-i", "watermark.png",
           "-filter_complex",
-          `[1:v]scale=${videoWidth}:-1[title]; [0:v][title]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2[watermark]; [watermark]overlay=(W-w)/2:60`,
+          `[1:v]trim=duration=3,setpts=PTS-STARTPTS[title]; [0:v][title]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2:enable='between(t,0,3)'[watermark]; [watermark]overlay=(W-w)/2:60`,
           "-preset", "ultrafast",
           '-crf', '30',
           "output.mp4",
@@ -349,7 +323,7 @@ export default function Page() {
           </CardBody>
         </Card>
         {title !== "" && (
-          <Center id="canvas" style={{ position: "relative", height: 180, }}>
+          <Center id="canvas" style={{ position: "relative", height: 80, }}>
             <Container
               style={{ position: "absolute", boxShadow: "7px 7px #148b9d" }}
               bg="rgba(255,255,255,0.9)"
