@@ -61,6 +61,7 @@ export default function Page() {
     const [videoWidth, setVideoWidth] = useState(0)
     const [videoFile, setVideoFile] = useState<File>();
     const [public_id, setPublicId] = useState('');
+    const [isDisable, setIsDisable] = useState(true);
 
     const showToast = useCallback(
         async (title: string, iStatus: number, message: string) => {
@@ -235,6 +236,7 @@ export default function Page() {
         });
 
         try {
+            setIsDisable(true)
             const public_id = `video_${Date.now()}`
             uploadToCloudinary(videoFile as File, public_id);
 
@@ -264,6 +266,7 @@ export default function Page() {
             if (data.success) {
                 setVideoUrl(data.url)
                 setPublicId(data.public_id)
+                setIsDisable(false)
                 toast.closeAll();
             } else {
                 toast.closeAll()
@@ -283,6 +286,7 @@ export default function Page() {
 
     const download = async () => {
         try {
+            toast.closeAll()
             toast({
                 title: "Please wait",
                 description: "Downloading video...",
@@ -450,9 +454,12 @@ export default function Page() {
                             </Button>
                         </CardBody>
                         <CardFooter>
-                            <Button onClick={download} colorScheme="teal" size="sm" width='100%'>
-                                Download
-                            </Button>
+                            <SimpleGrid>
+                                <Button onClick={download} colorScheme="teal" size="sm" disabled={isDisable} width="100%">
+                                    Download
+                                </Button>
+                                <Text textAlign="center" mt={2}>If the button does not work, please try again in few seconds</Text>
+                            </SimpleGrid>
                         </CardFooter>
                     </Card>
                 </SimpleGrid>
