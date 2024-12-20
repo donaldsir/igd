@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, ChangeEvent, FormEvent, useRef } from "react";
+import { useState, useCallback, ChangeEvent, FormEvent } from "react";
 import {
     FormControl,
     Input,
@@ -60,7 +60,7 @@ export default function Page() {
     const [videoUrl, setVideoUrl] = useState('')
     const [videoWidth, setVideoWidth] = useState(0)
     const [videoFile, setVideoFile] = useState<File>();
-    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const [public_id, setPublicId] = useState('');
 
     const showToast = useCallback(
         async (title: string, iStatus: number, message: string) => {
@@ -263,6 +263,7 @@ export default function Page() {
 
             if (data.success) {
                 setVideoUrl(data.url)
+                setPublicId(data.public_id)
                 toast.closeAll();
             } else {
                 toast.closeAll()
@@ -282,10 +283,18 @@ export default function Page() {
 
     const download = async () => {
         try {
+            toast({
+                title: "Please wait",
+                description: "Downloading video...",
+                status: "loading",
+                duration: null,
+            });
+
             const response = await fetch(videoUrl);
 
             // Periksa apakah permintaan berhasil
             if (!response.ok) {
+                toast.closeAll()
                 showToast("Error", 1, `Gagal mendownload video: ${response.statusText}`)
                 return;
             }
@@ -299,7 +308,7 @@ export default function Page() {
             // Buat elemen <a> untuk tautan unduhan
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'downloaded_video.mp4'; // Nama file hasil download
+            a.download = `${public_id}.mp4`; // Nama file hasil download
             document.body.appendChild(a);
             a.click();
 
@@ -307,8 +316,10 @@ export default function Page() {
             a.remove();
             window.URL.revokeObjectURL(url);
 
+            toast.closeAll()
             console.log('Video berhasil didownload.');
         } catch (e) {
+            toast.closeAll()
             showToast("Error", 1, (e as Error).message)
         }
     }
@@ -439,7 +450,7 @@ export default function Page() {
                             </Button>
                         </CardBody>
                         <CardFooter>
-                            <Button onClick={download} colorScheme="teal" size="sm">
+                            <Button onClick={download} colorScheme="teal" size="sm" width='100%'>
                                 Download
                             </Button>
                         </CardFooter>

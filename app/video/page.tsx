@@ -49,6 +49,7 @@ export default function Page() {
   const [owner, setOwner] = useState("");
   const [title, setTitle] = useState(``);
   const [fbid, setFbid] = useState("");
+  const [videoWidth, setVideoWidth] = useState(0);
   const [ffmpeg, setFfmpeg] = useState<FFmpeg | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -119,12 +120,13 @@ export default function Page() {
       const res = await response.json();
       const data = res.data;
 
+      let url = ""
       if (data.carousel_media === undefined) {
         if (data.is_video) {
           if (data.video_duration <= 60) {
-            setVideoURL(`${data.video_versions[0].url}&dl=1`);
+            url = `${data.video_versions[0].url}&dl=1`
           } else {
-            setVideoURL(`${data.video_versions[1].url}&dl=1`);
+            url = `${data.video_versions[1].url}&dl=1`
           }
 
         }
@@ -132,14 +134,25 @@ export default function Page() {
         for (const dt of data.carousel_media) {
           if (dt.is_video) {
             if (dt.video_duration <= 60) {
-              setVideoURL(`${dt.video_versions[0].url}&dl=1`);
+              url = `${dt.video_versions[0].url}&dl=1`
             } else {
-              setVideoURL(`${dt.video_versions[1].url}&dl=1`);
+              url = `${dt.video_versions[1].url}&dl=1`
             }
           }
         }
       }
 
+      const video = document.createElement('video');
+      video.src = url;
+
+      video.onloadedmetadata = function () {
+        setVideoWidth(video.videoWidth)
+
+        // Bebaskan URL setelah selesai digunakan
+        URL.revokeObjectURL(video.src);
+      };
+
+      setVideoURL(url);
       setOriginalCaption(data.caption.text);
       setOwner(data.user.username);
       setFbid(data.fbid);
@@ -196,7 +209,11 @@ export default function Page() {
 
       const element = document.getElementById("canvas");
       if (element) {
-        element.style.transform = 'scale(0.65)'
+        if (videoWidth !== 720) {
+          const scale = videoWidth / 720
+          element.style.transform = `scale(${scale})`
+        }
+
         const dataUrl = await htmlToImage.toPng(element, {});
 
         await ffmpeg.writeFile("title.png", await fetchFile(dataUrl));
@@ -345,7 +362,7 @@ export default function Page() {
               ref={videoRef}
               controls
             ></video>
-            <Button onClick={() => downloadVideo(`${fbid}.mp4`)} colorScheme="teal" size="sm" mt={4} ml={1}>
+            <Button onClick={() => downloadVideo(`${fbid}.mp4`)} colorScheme="teal" size="sm" mt={4} ml={1} width='100%'>
               Download
             </Button>
           </CardBody>

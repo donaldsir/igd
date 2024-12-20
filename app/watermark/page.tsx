@@ -42,6 +42,7 @@ export default function Page() {
   const [title, setTitle] = useState(``);
   const [videoFile, setVideoFile] = useState<File>();
   const [videoSrc, setVideoSrc] = useState("");
+  const [videoWidth, setVideoWidth] = useState(0);
   const [ffmpeg, setFfmpeg] = useState<FFmpeg | null>(null);
 
   useEffect(() => {
@@ -62,6 +63,16 @@ export default function Page() {
       console.error("Harap unggah file video terlebih dahulu.");
       return;
     }
+
+    const video = document.createElement('video');
+    video.src = URL.createObjectURL(target.files[0]);
+
+    video.onloadedmetadata = function () {
+      setVideoWidth(video.videoWidth)
+
+      // Bebaskan URL setelah selesai digunakan
+      URL.revokeObjectURL(video.src);
+    };
 
     setVideoFile(target.files[0])
   };
@@ -97,8 +108,11 @@ export default function Page() {
 
         const element = document.getElementById("canvas");
         if (element) {
+          if (videoWidth !== 720) {
+            const scale = videoWidth / 720
+            element.style.transform = `scale(${scale})`
+          }
 
-          element.style.transform = 'scale(0.65)'
           const dataUrl = await htmlToImage.toPng(element, {});
 
           await ffmpeg.writeFile("title.png", await fetchFile(dataUrl));
@@ -200,7 +214,7 @@ export default function Page() {
           <Card>
             <CardBody>
               {title !== "" && (
-                <Center id="canvas" style={{ position: "relative", height: 80, }}>
+                <Center id="canvas" style={{ position: "relative", height: 80 }}>
                   <Container
                     style={{ position: "absolute", boxShadow: "7px 7px #148b9d" }}
                     bg="rgba(255,255,255,0.9)"
