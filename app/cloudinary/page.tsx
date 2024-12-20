@@ -299,7 +299,7 @@ export default function Page() {
             // Periksa apakah permintaan berhasil
             if (!response.ok) {
                 toast.closeAll()
-                showToast("Error", 1, `Gagal mendownload video: ${response.statusText}`)
+                showToast("Error", 1, `Failed. Please try again in few seconds`)
                 return;
             }
 
