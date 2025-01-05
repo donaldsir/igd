@@ -19,7 +19,7 @@ import {
   Center,
   Container,
   Textarea,
-  CardHeader
+  CardHeader,
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
 import { FaArrowLeft } from "react-icons/fa";
@@ -57,20 +57,12 @@ export default function Page() {
   const [json, setJson] = useState<iSIM>();
   const [jadwalSIM1, setJadwalSIM1] = useState<Array<iJadwal>>([]);
   const [jadwalSIM2, setJadwalSIM2] = useState<Array<iJadwal>>([]);
-  const [caption, setCaption] = useState('')
+  const [caption, setCaption] = useState("");
   const [top1, setTop1] = useState(0);
   const [tanggal, setTanggal] = useState(dateMySql(new Date()));
-  const [day, setDay] = useState(new Date().getDay() - 1)
+  const [day, setDay] = useState(new Date().getDay());
 
-  const days = [
-    'Senin',
-    'Selasa',
-    'Rabu',
-    'Kamis',
-    'Jumat',
-    'Sabtu',
-    'Minggu',
-  ]
+  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
   useEffect(() => {
     async function fetchData() {
@@ -110,7 +102,7 @@ export default function Page() {
 
   const onChangeTanggal = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTanggal(e.target.value);
-    setDay(new Date(e.target.value).getDay() - 1)
+    setDay(new Date(e.target.value).getDay());
 
     const jadwal1: Array<iJadwal> = [];
     const jadwal2: Array<iJadwal> = [];
@@ -145,9 +137,9 @@ export default function Page() {
 
 Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk kelancaran proses perpanjangan SIM Anda.
 
-#planetdenpasar #planetkitabali  #infonetizenbali #infosemetonbali #simkelilingbali #simA #simC #bali`
+#planetdenpasar #planetkitabali  #infonetizenbali #infosemetonbali #simkelilingbali #simA #simC #bali`;
 
-    setCaption(text)
+    setCaption(text);
 
     setJadwalSIM1(jadwal1);
     setJadwalSIM2(jadwal2);
@@ -188,9 +180,9 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
 
 Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk kelancaran proses perpanjangan SIM Anda.
 
-#planetdenpasar #planetkitabali  #infonetizenbali #infosemetonbali #simkelilingbali #simA #simC #bali`
+#planetdenpasar #planetkitabali  #infonetizenbali #infosemetonbali #simkelilingbali #simA #simC #bali`;
 
-    setCaption(text)
+    setCaption(text);
     setJadwalSIM1(jadwal1);
     setJadwalSIM2(jadwal2);
     setTop1(topJadwal1);
@@ -293,14 +285,14 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
               />
               <Center id="canvas1" style={{ position: "relative", width: 340 }}>
                 <Image src={"/images/sim.jpg"} w={340} fit="cover" alt="media" />
-                <Center style={{ position: "absolute" }} bg="white" px={2} marginTop={-280} >
+                <Center style={{ position: "absolute" }} bg="white" px={2} marginTop={-280}>
                   <Text fontSize={12} className={roboto.className} textAlign="center" color="#e21e1f">
                     {`${days[day].toUpperCase()}, ${formatDate(tanggal).toUpperCase()}`}
                   </Text>
                 </Center>
 
                 {jadwalSIM1.map?.((dt: iJadwal, index) => (
-                  <Container key={index} style={{ position: "absolute", top: top1 + index * 36 }}>
+                  <Container key={index} style={{ position: "absolute", top: top1 + 10 + index * 36 }}>
                     <Center style={{ position: "absolute", left: 10 }} bg="#022c98" w={130} h={8}>
                       <Text fontSize={11} className={roboto.className} textAlign="center" color="white">
                         {dt.nama}
