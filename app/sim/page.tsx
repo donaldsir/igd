@@ -324,14 +324,14 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
               <CardBody>
                 <Center id="canvas2" style={{ position: "relative", width: 340 }}>
                   <Image src={"/images/sim.jpg"} w={340} fit="cover" alt="media" />
-                  <Center style={{ position: "absolute" }} bg="#e21e1f" py={1} px={2} rounded={10} top={2.5} left={4}>
-                    <Text fontSize={12} className={roboto.className} textAlign="center" color="white">
-                      {formatDate(tanggal)}
+                  <Center style={{ position: "absolute" }} bg="white" px={2} marginTop={-280}>
+                    <Text fontSize={12} className={roboto.className} textAlign="center" color="#e21e1f">
+                      {`${days[day].toUpperCase()}, ${formatDate(tanggal).toUpperCase()}`}
                     </Text>
                   </Center>
 
                   {jadwalSIM2.map?.((dt: iJadwal, index) => (
-                    <Container key={index} style={{ position: "absolute", top: 100 + index * 37 }}>
+                    <Container key={index} style={{ position: "absolute", top: top1 + 10 + index * 36 }}>
                       <Center style={{ position: "absolute", left: 10 }} bg="#022c98" w={130} h={8}>
                         <Text fontSize={11} className={roboto.className} textAlign="center" color="white">
                           {dt.nama}
