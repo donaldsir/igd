@@ -55,7 +55,8 @@ export default function Page() {
 
   const router = useRouter();
   const toast = useToast();
-  const xRapidApiKey = "d1b694d66amsh95321ca4e2c7b58p1b30eajsn93ea0bad3230";
+  const xRapidApiHost = "instagram-scraper-api2.p.rapidapi.com";
+  const xRapidApiKey = "93b488f6f7msh4e6c6df286868e0p1bf4c6jsn7e78bf5fa74b";
 
   const showToast = useCallback(
     async (title: string, iStatus: number, message: string) => {
@@ -114,39 +115,39 @@ export default function Page() {
       const response = await fetch(apiRapid, {
         method: "GET",
         headers: {
-          "x-rapidapi-key": xRapidApiKey, // Include your token here
+          "x-rapidapi-host": xRapidApiHost,
+          "x-rapidapi-key": xRapidApiKey,
         },
       });
       const res = await response.json();
       const data = res.data;
 
-      let url = ""
+      let url = "";
       if (data.carousel_media === undefined) {
         if (data.is_video) {
           if (data.video_duration <= 60) {
-            url = `${data.video_versions[0].url}&dl=1`
+            url = `${data.video_versions[0].url}&dl=1`;
           } else {
-            url = `${data.video_versions[1].url}&dl=1`
+            url = `${data.video_versions[1].url}&dl=1`;
           }
-
         }
       } else {
         for (const dt of data.carousel_media) {
           if (dt.is_video) {
             if (dt.video_duration <= 60) {
-              url = `${dt.video_versions[0].url}&dl=1`
+              url = `${dt.video_versions[0].url}&dl=1`;
             } else {
-              url = `${dt.video_versions[1].url}&dl=1`
+              url = `${dt.video_versions[1].url}&dl=1`;
             }
           }
         }
       }
 
-      const video = document.createElement('video');
+      const video = document.createElement("video");
       video.src = url;
 
       video.onloadedmetadata = function () {
-        setVideoWidth(video.videoWidth)
+        setVideoWidth(video.videoWidth);
 
         // Bebaskan URL setelah selesai digunakan
         URL.revokeObjectURL(video.src);
@@ -210,32 +211,43 @@ export default function Page() {
       const element = document.getElementById("canvas");
       if (element) {
         if (videoWidth !== 720) {
-          const scale = videoWidth / 720
-          element.style.transform = `scale(${scale})`
+          const scale = videoWidth / 720;
+          element.style.transform = `scale(${scale})`;
         }
 
         const dataUrl = await htmlToImage.toPng(element, {});
 
         await ffmpeg.writeFile("title.png", await fetchFile(dataUrl));
         await ffmpeg.exec([
-          "-i", "input.mp4",
-          "-i", "title.png",
-          "-i", "watermark.png",
+          "-i",
+          "input.mp4",
+          "-i",
+          "title.png",
+          "-i",
+          "watermark.png",
           "-filter_complex",
           `[1:v]trim=duration=3,setpts=PTS-STARTPTS[title]; [0:v][title]overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/1.2:enable='between(t,0,3)'[watermark]; [watermark]overlay=(W-w)/2:60`,
-          "-preset", "ultrafast",
-          '-crf', '30',
+          "-preset",
+          "ultrafast",
+          "-crf",
+          "30",
           "output.mp4",
         ]);
       } else {
         await ffmpeg.exec([
-          '-i', 'input.mp4',        // Input video
-          '-i', 'watermark.png',    // Input watermark
-          '-filter_complex', 'overlay=(W-w)/2:80', // Filter overlay (posisi watermark: x=10, y=10)
-          '-codec:a', 'copy',       // Salin audio tanpa encoding ulang
-          "-preset", "ultrafast",
-          '-crf', '30',
-          'output.mp4'              // Output video
+          "-i",
+          "input.mp4", // Input video
+          "-i",
+          "watermark.png", // Input watermark
+          "-filter_complex",
+          "overlay=(W-w)/2:80", // Filter overlay (posisi watermark: x=10, y=10)
+          "-codec:a",
+          "copy", // Salin audio tanpa encoding ulang
+          "-preset",
+          "ultrafast",
+          "-crf",
+          "30",
+          "output.mp4", // Output video
         ]);
       }
 
@@ -340,7 +352,7 @@ export default function Page() {
           </CardBody>
         </Card>
         {title !== "" && (
-          <Center id="canvas" style={{ position: "relative", height: 80, }}>
+          <Center id="canvas" style={{ position: "relative", height: 80 }}>
             <Container
               style={{ position: "absolute", boxShadow: "7px 7px #148b9d" }}
               bg="rgba(255,255,255,0.9)"
@@ -362,7 +374,14 @@ export default function Page() {
               ref={videoRef}
               controls
             ></video>
-            <Button onClick={() => downloadVideo(`${fbid}.mp4`)} colorScheme="teal" size="sm" mt={4} ml={1} width='100%'>
+            <Button
+              onClick={() => downloadVideo(`${fbid}.mp4`)}
+              colorScheme="teal"
+              size="sm"
+              mt={4}
+              ml={1}
+              width="100%"
+            >
               Download
             </Button>
           </CardBody>

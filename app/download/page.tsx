@@ -57,7 +57,8 @@ export default function Page() {
 
   const router = useRouter();
   const toast = useToast();
-  const xRapidApiKey = "d1b694d66amsh95321ca4e2c7b58p1b30eajsn93ea0bad3230";
+  const xRapidApiHost = "instagram-scraper-api2.p.rapidapi.com";
+  const xRapidApiKey = "93b488f6f7msh4e6c6df286868e0p1bf4c6jsn7e78bf5fa74b";
 
   // const accessToken = "IGQWRQOTZAPUlpXdGgxMDgwV283Nk5fVDJ2NTZAwX081UVNCLXFneDYyUEJmMWZAyODFtQTRTTWRHbVlyS041YW55MThIQUlLWU9ZANGZAsMnI4eXJUckdGV3pyMnZAQUGMzOEhyWnhhbjUzY2dIZA1FGMUMxN3RTc3BHX2sZD"
 
@@ -164,10 +165,12 @@ export default function Page() {
       const response = await fetch(apiRapid, {
         method: "GET",
         headers: {
-          "x-rapidapi-key": xRapidApiKey, // Include your token here
+          "x-rapidapi-host": xRapidApiHost,
+          "x-rapidapi-key": xRapidApiKey,
         },
       });
       const res = await response.json();
+
       const data = res.data;
 
       const links: IMedia[] = [];
@@ -318,8 +321,6 @@ export default function Page() {
               </form>
               {media.length > 0 && (
                 <Box mt={4} p={4} display={{ md: "flex" }}>
-
-
                   <VStack ml={{ md: 4 }}>
                     {media.map((item, index) => (
                       <Button
