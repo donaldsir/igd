@@ -210,11 +210,11 @@ export default function Page() {
 
       const element = document.getElementById("canvas");
       if (element) {
-        console.log(videoWidth)
+
         if (videoWidth === 720) {
-          element.style.transform = `scale(0.5)`;
+          element.style.transform = `scale(0.6)`;
         } else {
-          const scale = videoWidth / 1440;
+          const scale = videoWidth / 1200;
           element.style.transform = `scale(${scale})`;
         }
 
