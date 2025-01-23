@@ -210,10 +210,14 @@ export default function Page() {
 
       const element = document.getElementById("canvas");
       if (element) {
-        if (videoWidth !== 720) {
-          const scale = videoWidth / 720;
+        console.log(videoWidth)
+        if (videoWidth === 720) {
+          element.style.transform = `scale(0.5)`;
+        } else {
+          const scale = videoWidth / 1440;
           element.style.transform = `scale(${scale})`;
         }
+
 
         const dataUrl = await htmlToImage.toPng(element, {});
 
@@ -359,7 +363,7 @@ export default function Page() {
               w="85%"
               p={2}
             >
-              <Text fontSize={24} className={roboto.className} textAlign="center" lineHeight={1.1}>
+              <Text fontSize={22} className={roboto.className} textAlign="center" lineHeight={1.1}>
                 {title}
               </Text>
             </Container>
