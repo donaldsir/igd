@@ -35,7 +35,7 @@ const roboto = Roboto({
 
 interface iDetail {
   tanggal: "string";
-  lokasi: "string";
+  lokasi: "string[]";
   waktu: "string";
 }
 
@@ -46,7 +46,7 @@ interface iSIM {
 
 interface iJadwal {
   nama: string;
-  lokasi: string;
+  lokasi: [];
   waktu: string;
 }
 
@@ -113,9 +113,10 @@ export default function Page() {
       const filter = array.filter((array) => array.tanggal === dtFormat);
 
       if (filter.length > 0) {
+        let arrLokasi: any = filter[0].lokasi
         const dt = {
           nama: formatString(key),
-          lokasi: filter[0].lokasi,
+          lokasi: arrLokasi,
           waktu: filter[0].waktu,
         };
 
@@ -156,13 +157,14 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
       const filter = array.filter((array) => array.tanggal === dtFormat);
 
       if (filter.length > 0) {
+        let arrLokasi: any = filter[0].lokasi
         const dt = {
           nama: formatString(key),
-          lokasi: filter[0].lokasi,
+          lokasi: arrLokasi,
           waktu: filter[0].waktu,
         };
 
-        if (jadwal1.length < 6) {
+        if (jadwal1.length < 5) {
           jadwal1.push(dt);
         } else {
           jadwal2.push(dt);
@@ -292,8 +294,8 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
                 </Center>
 
                 {jadwalSIM1.map?.((dt: iJadwal, index) => (
-                  <Container key={index} style={{ position: "absolute", top: top1 + 10 + index * 36 }}>
-                    <Center style={{ position: "absolute", left: 10 }} bg="#022c98" w={130} h={8}>
+                  <Container key={index} style={{ position: "absolute", top: top1 + index * 36 }}>
+                    <Center style={{ position: "absolute", left: 10 }} bg="#022c98" w={130} h={dt.lokasi.length > 1 ? 12 : 8}>
                       <Text fontSize={11} className={roboto.className} textAlign="center" color="white">
                         {dt.nama}
                       </Text>
@@ -302,15 +304,19 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
                       style={{ position: "absolute", left: 145, paddingTop: 3, paddingLeft: 5 }}
                       bg="rgba(255,255,255,0.9)"
                       w={185}
-                      h={8}
+                      h={dt.lokasi.length > 1 ? 12 : 8}
                     >
-                      <Text fontSize={9} className={roboto.className} color="#022c98">
-                        {dt.lokasi}
-                      </Text>
+                      {dt.lokasi.map?.((dt2: string, index2) => (
+                        <Text key={index2} fontSize={9} className={roboto.className} color="#022c98">
+                          {dt2}
+                        </Text>
+                      ))}
+
                       <Text fontSize={9} className={roboto.className} color="#022c98">
                         {dt.waktu}
                       </Text>
                     </Box>
+
                   </Container>
                 ))}
               </Center>
@@ -343,9 +349,11 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
                         w={185}
                         h={8}
                       >
-                        <Text fontSize={9} className={roboto.className} color="#022c98">
-                          {dt.lokasi}
-                        </Text>
+                        {dt.lokasi.map?.((dt2: string, index2) => (
+                          <Text key={index2} fontSize={9} className={roboto.className} color="#022c98">
+                            {dt2}
+                          </Text>
+                        ))}
                         <Text fontSize={9} className={roboto.className} color="#022c98">
                           {dt.waktu}
                         </Text>
