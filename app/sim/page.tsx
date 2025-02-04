@@ -46,7 +46,7 @@ interface iSIM {
 
 interface iJadwal {
   nama: string;
-  lokasi: [];
+  lokasi: string[];
   waktu: string;
 }
 
@@ -63,6 +63,8 @@ export default function Page() {
   const [day, setDay] = useState(new Date().getDay());
 
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+  let addTop = 0;
 
   useEffect(() => {
     async function fetchData() {
@@ -113,14 +115,15 @@ export default function Page() {
       const filter = array.filter((array) => array.tanggal === dtFormat);
 
       if (filter.length > 0) {
-        let arrLokasi: any = filter[0].lokasi
+        const arrLokasi: string[] = Array.isArray(filter[0].lokasi) ? filter[0].lokasi : [filter[0].lokasi];
+
         const dt = {
           nama: formatString(key),
           lokasi: arrLokasi,
           waktu: filter[0].waktu,
         };
 
-        if (jadwal1.length < 6) {
+        if (jadwal1.length < 5) {
           jadwal1.push(dt);
         } else {
           jadwal2.push(dt);
@@ -128,7 +131,7 @@ export default function Page() {
       }
     }
 
-    const topJadwal1 = 80 + (6 - jadwal1.length) * 20;
+    const topJadwal1 = 100 + (5 - jadwal1.length) * 20;
 
     const text = `SIM Keliling Polda Bali ${dtFormat} menyediakan layanan perpanjangan SIM bagi warga Bali dengan persyaratan sebagai berikut :
 
@@ -157,7 +160,7 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
       const filter = array.filter((array) => array.tanggal === dtFormat);
 
       if (filter.length > 0) {
-        let arrLokasi: any = filter[0].lokasi
+        const arrLokasi: string[] = Array.isArray(filter[0].lokasi) ? filter[0].lokasi : [filter[0].lokasi];
         const dt = {
           nama: formatString(key),
           lokasi: arrLokasi,
@@ -172,7 +175,7 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
       }
     }
 
-    const topJadwal1 = 92 + (6 - jadwal1.length) * 20;
+    const topJadwal1 = 100 + (5 - jadwal1.length) * 20;
 
     const text = `SIM Keliling Polda Bali ${dtFormat} menyediakan layanan perpanjangan SIM bagi warga Bali dengan persyaratan sebagai berikut :
 
@@ -293,32 +296,50 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
                   </Text>
                 </Center>
 
-                {jadwalSIM1.map?.((dt: iJadwal, index) => (
-                  <Container key={index} style={{ position: "absolute", top: top1 + index * 36 }}>
-                    <Center style={{ position: "absolute", left: 10 }} bg="#022c98" w={130} h={dt.lokasi.length > 1 ? 12 : 8}>
-                      <Text fontSize={11} className={roboto.className} textAlign="center" color="white">
-                        {dt.nama}
-                      </Text>
-                    </Center>
-                    <Box
-                      style={{ position: "absolute", left: 145, paddingTop: 3, paddingLeft: 5 }}
-                      bg="rgba(255,255,255,0.9)"
-                      w={185}
-                      h={dt.lokasi.length > 1 ? 12 : 8}
+                {jadwalSIM1.map?.((dt: iJadwal, index) => {
+                  if (index > 0 && jadwalSIM1[index - 1].lokasi.length > 1) {
+                    addTop += 16;
+                  }
+
+                  const top = addTop + top1 + index * 36;
+
+                  return (
+                    <Container
+                      key={index}
+                      style={{
+                        position: "absolute",
+                        top: top,
+                      }}
                     >
-                      {dt.lokasi.map?.((dt2: string, index2) => (
-                        <Text key={index2} fontSize={9} className={roboto.className} color="#022c98">
-                          {dt2}
+                      <Center
+                        style={{ position: "absolute", left: 10 }}
+                        bg="#022c98"
+                        w={130}
+                        h={dt.lokasi.length > 1 ? 12 : 8}
+                      >
+                        <Text fontSize={11} className={roboto.className} textAlign="center" color="white">
+                          {dt.nama}
                         </Text>
-                      ))}
+                      </Center>
+                      <Box
+                        style={{ position: "absolute", left: 145, paddingTop: 3, paddingLeft: 5 }}
+                        bg="rgba(255,255,255,0.9)"
+                        w={185}
+                        h={dt.lokasi.length > 1 ? 12 : 8}
+                      >
+                        {dt.lokasi.map?.((dt2: string, index2) => (
+                          <Text key={index2} fontSize={9} className={roboto.className} color="#022c98">
+                            {dt2}
+                          </Text>
+                        ))}
 
-                      <Text fontSize={9} className={roboto.className} color="#022c98">
-                        {dt.waktu}
-                      </Text>
-                    </Box>
-
-                  </Container>
-                ))}
+                        <Text fontSize={9} className={roboto.className} color="#022c98">
+                          {dt.waktu}
+                        </Text>
+                      </Box>
+                    </Container>
+                  );
+                })}
               </Center>
               <Button onClick={() => download("canvas1", createFileName())} colorScheme="teal" size="sm" mt={4} ml={1}>
                 Download
@@ -336,30 +357,38 @@ Pastikan semua persyaratan dipenuhi sebelum mendatangi lokasi SIM Keliling untuk
                     </Text>
                   </Center>
 
-                  {jadwalSIM2.map?.((dt: iJadwal, index) => (
-                    <Container key={index} style={{ position: "absolute", top: top1 + 10 + index * 36 }}>
-                      <Center style={{ position: "absolute", left: 10 }} bg="#022c98" w={130} h={8}>
-                        <Text fontSize={11} className={roboto.className} textAlign="center" color="white">
-                          {dt.nama}
-                        </Text>
-                      </Center>
-                      <Box
-                        style={{ position: "absolute", left: 145, paddingTop: 3, paddingLeft: 5 }}
-                        bg="rgba(255,255,255,0.9)"
-                        w={185}
-                        h={8}
-                      >
-                        {dt.lokasi.map?.((dt2: string, index2) => (
-                          <Text key={index2} fontSize={9} className={roboto.className} color="#022c98">
-                            {dt2}
+                  {jadwalSIM2.map?.((dt: iJadwal, index) => {
+                    if (index > 0 && jadwalSIM1[index - 1].lokasi.length > 1) {
+                      addTop += 16;
+                    }
+
+                    const top = addTop + top1 + 10 + index * 36;
+
+                    return (
+                      <Container key={index} style={{ position: "absolute", top: top }}>
+                        <Center style={{ position: "absolute", left: 10 }} bg="#022c98" w={130} h={8}>
+                          <Text fontSize={11} className={roboto.className} textAlign="center" color="white">
+                            {dt.nama}
                           </Text>
-                        ))}
-                        <Text fontSize={9} className={roboto.className} color="#022c98">
-                          {dt.waktu}
-                        </Text>
-                      </Box>
-                    </Container>
-                  ))}
+                        </Center>
+                        <Box
+                          style={{ position: "absolute", left: 145, paddingTop: 3, paddingLeft: 5 }}
+                          bg="rgba(255,255,255,0.9)"
+                          w={185}
+                          h={8}
+                        >
+                          {dt.lokasi.map?.((dt2: string, index2) => (
+                            <Text key={index2} fontSize={9} className={roboto.className} color="#022c98">
+                              {dt2}
+                            </Text>
+                          ))}
+                          <Text fontSize={9} className={roboto.className} color="#022c98">
+                            {dt.waktu}
+                          </Text>
+                        </Box>
+                      </Container>
+                    );
+                  })}
                 </Center>
                 <Button
                   onClick={() => download("canvas2", createFileName())}
