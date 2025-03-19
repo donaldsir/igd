@@ -57,6 +57,12 @@ export default function Page() {
               Text on Video
             </Button>
           </SimpleGrid>
+
+          <SimpleGrid w={400} mt={6}>
+            <Text textAlign="center" fontSize="sm" color="gray">
+              Donald Siregar
+            </Text>
+          </SimpleGrid>
         </Box>
       </VStack>
     </Center>
